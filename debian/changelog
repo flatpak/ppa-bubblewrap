@@ -1,0 +1,5 @@
+bubblewrap (0~git160513-1) unstable; urgency=low
+
+  * Initial upload (closes: #823548).
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Tue, 10 May 2016 08:45:59 +0000
