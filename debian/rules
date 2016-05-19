@@ -6,11 +6,14 @@
 
 PKGDIR=$(CURDIR)/debian/bubblewrap
 
+override_dh_auto_configure:
+	dh_auto_configure -- --with-priv-mode=setuid
+
 override_dh_fixperms:
 	chmod a+x $(PKGDIR)/usr/share/bash-completion/completions/bwrap
-	dh_fixperms
+	dh_fixperms -Xbin/bwrap
 
 %:
 	dh $@ --parallel --with autoreconf
 
-.PHONY: override_dh_fixperms
+.PHONY: override_dh_auto_configure override_dh_fixperms

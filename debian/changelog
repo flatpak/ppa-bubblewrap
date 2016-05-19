@@ -1,3 +1,10 @@
+bubblewrap (0~git160513-2) unstable; urgency=low
+
+  * Install bwrap binary setuid (closes: #824646).
+  * Make libselinux1-dev build dependency Linux only.
+
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Thu, 19 May 2016 15:24:35 +0000
+
 bubblewrap (0~git160513-1) unstable; urgency=low
 
   * Initial upload (closes: #823548).
