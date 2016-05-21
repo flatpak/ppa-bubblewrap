@@ -1,6 +1,8 @@
 bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
 
   * debian/copyright: correct package name and source
+  * debian/control: make the whole package Linux-only. Like Flatpak, this
+    package is inherently non-portable.
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 
