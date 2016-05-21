@@ -4,6 +4,8 @@ bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
   * debian/control: make the whole package Linux-only. Like Flatpak, this
     package is inherently non-portable.
   * Move from Section: web to Section: admin
+  * Increase Priority to optional, because this tool is likely to be
+    depended on by gnome-software (via Flatpak) in future
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 
