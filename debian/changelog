@@ -1,3 +1,9 @@
+bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
+
+  * debian/copyright: correct package name and source
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
+
 bubblewrap (0~git160513-2) unstable; urgency=low
 
   * Install bwrap binary setuid (closes: #824646).
