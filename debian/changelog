@@ -7,6 +7,8 @@ bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
   * Increase Priority to optional, because this tool is likely to be
     depended on by gnome-software (via Flatpak) in future
   * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
+  * Add patches from upstream bug 71 to make --dev coexist with
+    --unshare-user
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 
