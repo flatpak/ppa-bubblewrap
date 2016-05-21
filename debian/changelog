@@ -9,6 +9,7 @@ bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
   * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
   * Add patches from upstream bug 71 to make --dev coexist with
     --unshare-user
+  * Add some simple autopkgtests, including one for bug 71
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 

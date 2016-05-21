@@ -1,0 +1,36 @@
+#!/usr/bin/bats
+# vim:set sw=4 sts=4 et ft=sh:
+
+set -e
+
+. debian/tests/testlib.sh
+
+@test "Mount new minimal /dev" {
+    run bwrap --ro-bind / / --dev /dev /bin/sh -c 'echo /dev/*'
+
+    like " $output " " /dev/full "
+    like " $output " " /dev/null "
+    like " $output " " /dev/pts "
+    like " $output " " /dev/random "
+    like " $output " " /dev/shm "
+    like " $output " " /dev/stderr "
+    like " $output " " /dev/stdin "
+    like " $output " " /dev/stdout "
+    like " $output " " /dev/tty "
+    like " $output " " /dev/urandom "
+    like " $output " " /dev/zero "
+
+    # an arbitrary selection of devices not expected to be passed through
+    unlike " $output " " /dev/hda "
+    unlike " $output " " /dev/dsp "
+    unlike " $output " " /dev/fuse "
+    unlike " $output " " /dev/kmsg "
+    unlike " $output " " /dev/loop0 "
+    unlike " $output " " /dev/mem "
+    unlike " $output " " /dev/sda "
+    unlike " $output " " /dev/snd "
+    unlike " $output " " /dev/tty1 "
+    unlike " $output " " /dev/vda "
+
+    is "$status" 0
+}

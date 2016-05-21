@@ -1,0 +1,13 @@
+#!/usr/bin/bats
+# vim:set sw=4 sts=4 et ft=sh:
+
+set -e
+
+. debian/tests/testlib.sh
+
+@test "Basic usage" {
+    ret=0
+    run bwrap --ro-bind / / /usr/bin/id
+    is "$status" 0
+    is "$output" "$(id)"
+}

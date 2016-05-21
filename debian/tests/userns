@@ -1,0 +1,35 @@
+#!/usr/bin/bats
+# vim:set sw=4 sts=4 et ft=sh:
+
+set -e
+
+. debian/tests/testlib.sh
+
+@test "Unshare user ID" {
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 /usr/bin/id -u
+    is "$status" 0
+    is "$output" 2
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 /usr/bin/id -g
+    is "$status" 0
+    is "$output" 3
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 /bin/sh -c 'ls -l /etc/passwd'
+    is "$status" 0
+    like "$output" " nobody nogroup "
+}
+
+@test "Combine new /dev with new user namespace (#71)" {
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 --dev /dev /bin/sh -c 'echo /dev/*'
+
+    like " $output " " /dev/full "
+    unlike " $output " " /dev/tty1 "
+
+    is "$status" 0
+
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 --dev /dev /usr/bin/id -u
+    is "$status" 0
+    is "$output" 2
+
+    run bwrap --ro-bind / / --unshare-user --uid 2 --gid 3 --dev /dev /usr/bin/id -g
+    is "$status" 0
+    is "$output" 3
+}
