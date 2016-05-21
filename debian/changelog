@@ -6,6 +6,7 @@ bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
   * Move from Section: web to Section: admin
   * Increase Priority to optional, because this tool is likely to be
     depended on by gnome-software (via Flatpak) in future
+  * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 
