@@ -1,0 +1,16 @@
+#!/usr/bin/bats
+# vim:set sw=4 sts=4 et ft=sh:
+
+set -e
+
+. debian/tests/testlib.sh
+
+@test "Unshare network namespace" {
+    run bwrap --ro-bind / / --unshare-net /bin/sh -c 'ip link ls'
+
+    like "$output" $'(^|\n)[0-9]+: lo:'
+    unlike "$output" $'(^|\n)[0-9]+: en[^:]*:'
+    unlike "$output" $'(^|\n)[0-9]+: eth[^:]*:'
+    unlike "$output" $'(^|\n)[0-9]+: wl[^:]*:'
+    is "$status" 0
+}

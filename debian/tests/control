@@ -5,3 +5,10 @@ Tests:
 Depends:
  bats,
  bubblewrap,
+
+Tests:
+ net
+Depends:
+ bats,
+ bubblewrap,
+ iproute2,
