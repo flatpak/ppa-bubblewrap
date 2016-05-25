@@ -35,7 +35,7 @@ index e4d250b..6e47b5f 100644
  endif
  
 diff --git a/bubblewrap.c b/bubblewrap.c
-index 1f9331a..59407a7 100644
+index 1f9331a..7fdeb35 100644
 --- a/bubblewrap.c
 +++ b/bubblewrap.c
 @@ -358,7 +358,7 @@ do_init (int event_fd, pid_t initial_pid)
@@ -43,7 +43,7 @@ index 1f9331a..59407a7 100644
  
  /* low 32bit caps needed */
 -#define REQUIRED_CAPS_0 (CAP_TO_MASK (CAP_SYS_ADMIN) | CAP_TO_MASK (CAP_SYS_CHROOT) | CAP_TO_MASK (CAP_NET_ADMIN))
-+#define REQUIRED_CAPS_0 (CAP_TO_MASK (CAP_SYS_ADMIN) | CAP_TO_MASK (CAP_SYS_CHROOT) | CAP_TO_MASK (CAP_SETUID) | CAP_TO_MASK (CAP_SETGID))
++#define REQUIRED_CAPS_0 (CAP_TO_MASK (CAP_SYS_ADMIN) | CAP_TO_MASK (CAP_SYS_CHROOT) | CAP_TO_MASK (CAP_NET_ADMIN) | CAP_TO_MASK (CAP_SETUID) | CAP_TO_MASK (CAP_SETGID))
  /* high 32bit caps needed */
  #define REQUIRED_CAPS_1 0
  
