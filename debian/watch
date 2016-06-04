@@ -1,0 +1,3 @@
+version=2
+opts=filenamemangle=s/.+\/v(\d\S*)\.tar\.gz/bubblewrap-$1\.tar\.gz/ \
+  https://github.com/projectatomic/bubblewrap/tags .*/v(\d\S*)\.tar\.gz

@@ -10,6 +10,7 @@ bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
   * Add patches from upstream bug 71 to make --dev coexist with
     --unshare-user (Closes: #824968)
   * Add some simple autopkgtests, including one for bug 71
+  * debian/watch: add
 
  -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
 
