@@ -1,5 +1,6 @@
-bubblewrap (0~git160513-3) UNRELEASED; urgency=medium
+bubblewrap (0.1.0-1) UNRELEASED; urgency=medium
 
+  * New upstream release
   * debian/copyright: correct package name and source
   * debian/control: make the whole package Linux-only. Like Flatpak, this
     package is inherently non-portable.
