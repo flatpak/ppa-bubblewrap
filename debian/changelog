@@ -1,6 +1,7 @@
 bubblewrap (0.1.0-1) UNRELEASED; urgency=medium
 
   * New upstream release
+    + --dev can now coexist with --unshare-user (Closes: #824968)
   * debian/copyright: correct package name and source
   * debian/control: make the whole package Linux-only. Like Flatpak, this
     package is inherently non-portable.
@@ -8,8 +9,6 @@ bubblewrap (0.1.0-1) UNRELEASED; urgency=medium
   * Increase Priority to optional, because this tool is likely to be
     depended on by gnome-software (via Flatpak) in future
   * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
-  * Add patches from upstream bug 71 to make --dev coexist with
-    --unshare-user (Closes: #824968)
   * Add some simple autopkgtests, including one for bug 71
   * debian/watch: add
 
