@@ -1,18 +1,19 @@
-bubblewrap (0.1.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.0-1) unstable; urgency=low
 
-  * New upstream release
-    + --dev can now coexist with --unshare-user (Closes: #824968)
-  * debian/copyright: correct package name and source
+  * New upstream release (closes: #826358).
+  * Add watch file.
+  * Add Simon McVittie as uploader.
+
+  [ Simon McVittie <smcv@debian.org> ]
+  * debian/copyright: correct package name and source (closes: #824969)
   * debian/control: make the whole package Linux-only. Like Flatpak, this
     package is inherently non-portable.
-  * Move from Section: web to Section: admin (Closes: #824969)
+  * Move from Section: web to Section: admin
   * Increase Priority to optional, because this tool is likely to be
     depended on by gnome-software (via Flatpak) in future
-  * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
-  * Add some simple autopkgtests, including one for bug 71
-  * debian/watch: add
+  * Add some simple autopkgtests, including one for bug 71 (closes: #824968)
 
- -- Simon McVittie <smcv@debian.org>  Sat, 21 May 2016 15:10:56 +0100
+ -- Laszlo Boszormenyi (GCS) <gcs@debian.org>  Mon, 06 Jun 2016 17:20:38 +0000
 
 bubblewrap (0~git160513-2) unstable; urgency=low
 

@@ -1,14 +1,5 @@
 Tests:
- basic
- dev
  userns
 Depends:
  bats,
  bubblewrap,
-
-Tests:
- net
-Depends:
- bats,
- bubblewrap,
- iproute2,
