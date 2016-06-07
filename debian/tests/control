@@ -1,4 +1,6 @@
 Tests:
+ basic
+ dev
  userns
 Depends:
  bats,
