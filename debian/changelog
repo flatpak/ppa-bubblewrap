@@ -4,6 +4,7 @@ bubblewrap (0.1.0-2) UNRELEASED; urgency=medium
   * Really add the regression test for keeping CAP_NET_ADMIN
   * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
   * Normalize package lists via `wrap-and-sort -abst`
+  * Add Vcs-Git, Vcs-Browser metadata
 
  -- Simon McVittie <smcv@debian.org>  Tue, 07 Jun 2016 07:45:19 +0100
 
