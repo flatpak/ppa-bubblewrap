@@ -2,14 +2,25 @@ Source: bubblewrap
 Section: admin
 Priority: optional
 Maintainer: Laszlo Boszormenyi (GCS) <gcs@debian.org>
-Uploaders: Simon McVittie <smcv@debian.org>
-Build-Depends: debhelper (>= 9), dh-autoreconf, pkg-config, libselinux1-dev (>= 2.1.9), libcap-dev, bash-completion, xsltproc, docbook-xsl
+Uploaders:
+ Simon McVittie <smcv@debian.org>,
+Build-Depends:
+ bash-completion,
+ debhelper (>= 9),
+ dh-autoreconf,
+ docbook-xsl,
+ libcap-dev,
+ libselinux1-dev (>= 2.1.9),
+ pkg-config,
+ xsltproc,
 Standards-Version: 3.9.8
 Homepage: https://github.com/projectatomic/bubblewrap
 
 Package: bubblewrap
 Architecture: linux-any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends:
+ ${misc:Depends},
+ ${shlibs:Depends},
 Description: setuid wrapper for unprivileged chroot and namespace manipulation
  Core execution engine for unprivileged containers that works as a setuid
  binary on kernels without user namespaces.
