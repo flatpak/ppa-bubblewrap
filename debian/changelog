@@ -2,6 +2,7 @@ bubblewrap (0.1.0-2) UNRELEASED; urgency=medium
 
   * Run basic and dev autopkgtests in addition to userns
   * Really add the regression test for keeping CAP_NET_ADMIN
+  * debian/gbp.conf: add DEP-14-style git-buildpackage configuration
 
  -- Simon McVittie <smcv@debian.org>  Tue, 07 Jun 2016 07:45:19 +0100
 
