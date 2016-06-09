@@ -22,7 +22,8 @@ on other distributions.
 
 Signed-off-by: Simon McVittie <smcv@debian.org>
 Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=826787
-Forwarded: https://github.com/projectatomic/bubblewrap/pull/75
+Reviewed-by: Alex Larsson
+Applied-upstream: https://github.com/projectatomic/bubblewrap/commit/f6ca3690120ae4626fac865800cbe36779ac22f8
 ---
  Makefile-bwrap.am | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
