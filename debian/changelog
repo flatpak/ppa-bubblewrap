@@ -1,4 +1,4 @@
-bubblewrap (0.1.0-2) UNRELEASED; urgency=medium
+bubblewrap (0.1.0-2) unstable; urgency=medium
 
   * Run basic and dev autopkgtests in addition to userns
   * Really add the regression test for keeping CAP_NET_ADMIN
@@ -8,7 +8,7 @@ bubblewrap (0.1.0-2) UNRELEASED; urgency=medium
   * d/p/build-put-libraries-in-LDADD-not-LDFLAGS.patch: new patch
     fixing linking with -Wl,--as-needed (closes: #826787)
 
- -- Simon McVittie <smcv@debian.org>  Tue, 07 Jun 2016 07:45:19 +0100
+ -- Simon McVittie <smcv@debian.org>  Tue, 14 Jun 2016 16:28:09 -0400
 
 bubblewrap (0.1.0-1) unstable; urgency=low
 
