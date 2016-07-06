@@ -1,6 +1,8 @@
 bubblewrap (0.1.0-3) UNRELEASED; urgency=medium
 
   * d/control: bubblewrap is Multi-Arch: foreign
+  * Hardening: build as a position-independent executable with
+    eager symbol binding
 
  -- Simon McVittie <smcv@debian.org>  Wed, 06 Jul 2016 11:01:29 +0100
 
