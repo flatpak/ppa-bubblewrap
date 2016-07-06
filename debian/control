@@ -20,6 +20,7 @@ Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/bubblewrap.git
 
 Package: bubblewrap
 Architecture: linux-any
+Multi-arch: foreign
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
