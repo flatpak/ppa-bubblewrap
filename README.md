@@ -53,7 +53,7 @@ Users
 This program can be shared by all container tools which perform
 non-root operation, such as:
 
- - [xdg-app](https://cgit.freedesktop.org/xdg-app/xdg-app)
+ - [Flatpak](http://www.flatpak.org)
  - [rpm-ostree unprivileged](https://github.com/projectatomic/rpm-ostree/pull/209)
 
 We would also like to see this be available in Kubernetes/OpenShift
@@ -67,7 +67,7 @@ Usage
 bubblewrap works by creating a new, completely empty, mount
 namespace where the root is on a tmpfs that is invisible from the
 host, and will be automatically cleaned up when the last process
-exists. You can then use commandline options to construct the root
+exits. You can then use commandline options to construct the root
 filesystem and process environment and command to run in the
 namespace.
 
@@ -135,14 +135,14 @@ Seccomp filters: You can pass in seccomp filters that limit which syscalls can b
 Related project comparison: Firejail
 ------------------------------------
 
-[Firejail](https://github.com/netblue30/firejail/tree/master/src/firejail) is
-similar to xdg-app before bubblewrap was split out in that it combines
+[Firejail](https://github.com/netblue30/firejail/tree/master/src/firejail)
+is similar to Flatpak before bubblewrap was split out in that it combines
 a setuid tool with a lot of desktop-specific sandboxing features.  For
 example, Firejail knows about Pulseaudio, whereas bubblewrap does not.
 
 The bubblewrap authors believe it's much easier to audit a small
 setuid program, and keep features such as Pulseaudio filtering as an
-unprivileged process, as now occurs in xdg-app.
+unprivileged process, as now occurs in Flatpak.
 
 Also, @cgwalters thinks trying to
 [whitelist file paths](https://github.com/netblue30/firejail/blob/37a5a3545ef6d8d03dad8bbd888f53e13274c9e5/src/firejail/fs_whitelist.c#L176)
@@ -151,7 +151,7 @@ and the myriad ways in which system administrators may configure a
 system.  The bubblewrap approach is to only retain a few specific
 Linux capabilities such as `CAP_SYS_ADMIN`, but to always access the
 filesystem as the invoking uid.  This entirely closes
-[TOCTOCU attacks](https://cwe.mitre.org/data/definitions/367.html) and
+[TOCTTOU attacks](https://cwe.mitre.org/data/definitions/367.html) and
 such.
 
 Related project comparison: Sandstorm.io
