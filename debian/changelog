@@ -1,9 +1,9 @@
-bubblewrap (0.1.1-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.1-1) unstable; urgency=medium
 
   * New upstream release
     - drop patch, included upstream
 
- -- Simon McVittie <smcv@debian.org>  Thu, 07 Jul 2016 22:18:20 +0100
+ -- Simon McVittie <smcv@debian.org>  Sun, 17 Jul 2016 09:08:35 +0100
 
 bubblewrap (0.1.0-3) unstable; urgency=medium
 
