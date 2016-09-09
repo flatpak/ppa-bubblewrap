@@ -94,8 +94,12 @@
   <para>Options related to kernel namespaces:</para>
   <variablelist>
     <varlistentry>
-      <term><option>--share-user</option></term>
-      <listitem><para>Don't create a new user namespace</para></listitem>
+      <term><option>--unshare-user</option></term>
+      <listitem><para>Create a new user namespace</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--unshare-user-try</option></term>
+      <listitem><para>Create a new user namespace if possible else skip it</para></listitem>
     </varlistentry>
     <varlistentry>
       <term><option>--unshare-ipc</option></term>
@@ -123,11 +127,15 @@
     </varlistentry>
     <varlistentry>
       <term><option>--uid <arg choice="plain">UID</arg></option></term>
-      <listitem><para>Use a custom user id in the sandbox (incompatible with <option>--share-user</option>)</para></listitem>
+      <listitem><para>Use a custom user id in the sandbox (requires <option>--unshare-user</option>)</para></listitem>
     </varlistentry>
     <varlistentry>
       <term><option>--gid <arg choice="plain">GID</arg></option></term>
-      <listitem><para>Use a custom group id in the sandbox (incompatible with <option>--share-user</option>)</para></listitem>
+      <listitem><para>Use a custom group id in the sandbox (requires <option>--unshare-user</option>)</para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--hostname <arg choice="plain">HOSTNAME</arg></option></term>
+      <listitem><para>Use a custom hostname in the sandbox (requires <option>--unshare-uts</option>)</para></listitem>
     </varlistentry>
   </variablelist>
   <para>Options about environment setup:</para>
@@ -179,6 +187,10 @@
       <listitem><para>Bind mount the host path <arg choice="plain">SRC</arg> readonly on <arg choice="plain">DEST</arg></para></listitem>
     </varlistentry>
     <varlistentry>
+      <term><option>--remount-ro <arg choice="plain">DEST</arg></option></term>
+      <listitem><para>Remount the path <arg choice="plain">DEST</arg> as readonly.  It works only on the specified mount point, without changing any other mount point under the specified path</para></listitem>
+    </varlistentry>
+    <varlistentry>
       <term><option>--proc <arg choice="plain">DEST</arg></option></term>
       <listitem><para>Mount procfs on <arg choice="plain">DEST</arg></para></listitem>
     </varlistentry>
@@ -207,6 +219,10 @@
       <listitem><para>Copy from the file descriptor <arg choice="plain">FD</arg> to a file which is bind-mounted on <arg choice="plain">DEST</arg></para></listitem>
     </varlistentry>
     <varlistentry>
+      <term><option>--ro-bind-data <arg choice="plain">FD</arg> <arg choice="plain">DEST</arg></option></term>
+      <listitem><para>Copy from the file descriptor <arg choice="plain">FD</arg> to a file which is bind-mounted readonly on <arg choice="plain">DEST</arg></para></listitem>
+    </varlistentry>
+    <varlistentry>
       <term><option>--symlink <arg choice="plain">SRC</arg> <arg choice="plain">DEST</arg></option></term>
       <listitem><para>Create a symlink at <arg choice="plain">DEST</arg> with target <arg choice="plain">SRC</arg></para></listitem>
     </varlistentry>
@@ -233,6 +249,18 @@
       <listitem><para>
 	File label for temporary sandbox content. On an SELinux system you can specify
 	the SELinux context for the sandbox content.
+      </para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--block-fd <arg choice="plain">FD</arg></option></term>
+      <listitem><para>
+	Block the sandbox on reading from FD until some data is available.
+      </para></listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><option>--info-fd <arg choice="plain">FD</arg></option></term>
+      <listitem><para>
+	Write information in JSON format about the sandbox to FD.
       </para></listitem>
     </varlistentry>
   </variablelist>
