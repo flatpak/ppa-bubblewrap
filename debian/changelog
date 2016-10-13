@@ -1,3 +1,10 @@
+bubblewrap (0.1.2-2) unstable; urgency=high
+
+  * Revert addition of --set-hostname as a short-term fix for
+    CVE-2016-8659 (Closes: #840605)
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 13 Oct 2016 11:12:38 +0100
+
 bubblewrap (0.1.2-1) unstable; urgency=medium
 
   * New upstream release
