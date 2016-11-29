@@ -6,6 +6,10 @@ bubblewrap (0.1.4-1) UNRELEASED; urgency=medium
     d/p/Adapt-tests-so-they-can-be-run-against-installed-binaries.patch:
     improve the upstream tests
   * d/tests/upstream: run the upstream tests as autopkgtests
+  * d/rules: Do not enable setuid mode at configure time. If we do, we
+    can't run the build-time tests, and it no longer makes any difference
+    to the actual code. Make the executable setuid via Debian packaging
+    instead.
 
  -- Simon McVittie <smcv@debian.org>  Tue, 29 Nov 2016 10:18:32 +0000
 
