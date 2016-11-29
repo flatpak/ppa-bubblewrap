@@ -3,12 +3,15 @@ Date: Tue, 29 Nov 2016 10:17:05 +0000
 Subject: test-run: don't assume we are uid 1000
 
 Signed-off-by: Simon McVittie <smcv@debian.org>
+Closes: #120
+Approved by: alexlarsson
+Applied-upstream: 0.1.5, commit:21c6736
 ---
  tests/test-run.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tests/test-run.sh b/tests/test-run.sh
-index fef5367..5b15922 100755
+index cd31e84..c14813d 100755
 --- a/tests/test-run.sh
 +++ b/tests/test-run.sh
 @@ -32,7 +32,7 @@ assert_file_has_content () {

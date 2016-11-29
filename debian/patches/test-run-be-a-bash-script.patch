@@ -7,6 +7,9 @@ in particular, /bin/sh in Debian and Ubuntu is usually dash, which
 doesn't have set -o.
 
 Signed-off-by: Simon McVittie <smcv@debian.org>
+Closes: #120
+Approved by: alexlarsson
+Applied-upstream: 0.1.5, commit:7c8d421
 ---
  tests/test-run.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)

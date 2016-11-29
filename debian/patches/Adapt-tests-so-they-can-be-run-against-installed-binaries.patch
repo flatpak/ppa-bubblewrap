@@ -7,6 +7,9 @@ BWRAP, and set that variable in TESTS_ENVIRONMENT so we are testing
 the just-built version in "make check".
 
 Signed-off-by: Simon McVittie <smcv@debian.org>
+Closes: #120
+Approved by: alexlarsson
+Applied-upstream: 0.1.5, commit:3e65988
 ---
  Makefile.am         |  2 +-
  tests/test-basic.sh |  2 +-
@@ -39,7 +42,7 @@ index 7fab54c..1f17089 100755
  assert_file_has_content out.txt "--lock-file"
  
 diff --git a/tests/test-run.sh b/tests/test-run.sh
-index cd31e84..fef5367 100755
+index c14813d..5b15922 100755
 --- a/tests/test-run.sh
 +++ b/tests/test-run.sh
 @@ -47,35 +47,35 @@ if test -x `dirname $UNREADABLE`; then
