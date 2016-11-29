@@ -1,0 +1,25 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Tue, 29 Nov 2016 11:16:12 +0000
+Subject: Fix incorrect nesting of backticks when finding a FUSE mount
+
+Signed-off-by: Simon McVittie <smcv@debian.org>
+Closes: #121
+Approved by: alexlarsson
+Applied-upstream: 0.1.5, commit:9dfc638
+---
+ tests/test-run.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tests/test-run.sh b/tests/test-run.sh
+index 5b15922..5927f5d 100755
+--- a/tests/test-run.sh
++++ b/tests/test-run.sh
+@@ -32,7 +32,7 @@ assert_file_has_content () {
+ }
+ 
+ FUSE_DIR=
+-for mp in `cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=`id -u` | awk '{print $2}'`; do
++for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | awk '{print $2}'); do
+     if test -d $mp; then
+         echo Using $mp as test fuse mount
+         FUSE_DIR=$mp

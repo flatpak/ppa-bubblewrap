@@ -3,7 +3,8 @@ bubblewrap (0.1.4-1) UNRELEASED; urgency=medium
   * New upstream release
   * d/p/test-run-be-a-bash-script.patch,
     d/p/test-run-don-t-assume-we-are-uid-1000.patch,
-    d/p/Adapt-tests-so-they-can-be-run-against-installed-binaries.patch:
+    d/p/Adapt-tests-so-they-can-be-run-against-installed-binaries.patch,
+    d/p/Fix-incorrect-nesting-of-backticks-when-finding-a-FUSE-mo.patch:
     improve the upstream tests
   * d/tests/upstream: run the upstream tests as autopkgtests
   * d/rules: Do not enable setuid mode at configure time. If we do, we
