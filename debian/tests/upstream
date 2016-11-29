@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -e
+
+tests/test-basic.sh
+tests/test-run.sh

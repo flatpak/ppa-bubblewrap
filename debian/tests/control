@@ -12,3 +12,9 @@ Depends:
  bats,
  bubblewrap,
  iproute2,
+
+Tests:
+ upstream
+Restrictions: allow-stderr
+Depends:
+ bubblewrap,

@@ -5,6 +5,7 @@ bubblewrap (0.1.4-1) UNRELEASED; urgency=medium
     d/p/test-run-don-t-assume-we-are-uid-1000.patch,
     d/p/Adapt-tests-so-they-can-be-run-against-installed-binaries.patch:
     improve the upstream tests
+  * d/tests/upstream: run the upstream tests as autopkgtests
 
  -- Simon McVittie <smcv@debian.org>  Tue, 29 Nov 2016 10:18:32 +0000
 
