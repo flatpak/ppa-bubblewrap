@@ -1,5 +1,6 @@
 AM_CFLAGS = $(WARN_CFLAGS)
 CLEANFILES =
+EXTRA_DIST =
 
 GITIGNOREFILES = build-aux/ gtk-doc.make config.h.in aclocal.m4
 
@@ -12,16 +13,26 @@ install-exec-hook:
 if PRIV_MODE_SETUID
 	$(SUDO_BIN) chown root $(DESTDIR)$(bindir)/bwrap
 	$(SUDO_BIN) chmod u+s $(DESTDIR)$(bindir)/bwrap
-else
-if PRIV_MODE_FILECAPS
-	$(SUDO_BIN) setcap cap_sys_admin,cap_net_admin,cap_sys_chroot,cap_setuid,cap_setgid+ep $(DESTDIR)$(bindir)/bwrap
 endif
+
+check_PROGRAMS = test-bwrap
+
+test-bwrap: bwrap
+	rm -rf test-bwrap
+	cp bwrap test-bwrap
+if PRIV_MODE_SETUID
+	$(SUDO_BIN) chown root test-bwrap
+	$(SUDO_BIN) chmod u+s test-bwrap
 endif
+
+test_bwrap_SOURCES=
 
 include Makefile-docs.am
 
-TESTS = tests/test-basic.sh
+TESTS = tests/test-basic.sh tests/test-run.sh
 TESTS_ENVIRONMENT = PATH=$$(cd $(top_builddir) && pwd):$${PATH}
+
+EXTRA_DIST += $(TESTS)
 
 if ENABLE_BASH_COMPLETION
 bashcompletiondir = $(BASH_COMPLETION_DIR)
@@ -29,3 +40,7 @@ dist_bashcompletion_DATA = completions/bash/bwrap
 endif
 
 -include $(top_srcdir)/git.mk
+
+AM_DISTCHECK_CONFIGURE_FLAGS =		\
+	--with-bash-completion-dir="\$(datadir)"/bash-completion/ \
+	$(NULL)
