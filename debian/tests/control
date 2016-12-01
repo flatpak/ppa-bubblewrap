@@ -2,12 +2,14 @@ Tests:
  basic
  dev
  userns
+Restrictions: isolation-machine
 Depends:
  bats,
  bubblewrap,
 
 Tests:
  net
+Restrictions: isolation-machine
 Depends:
  bats,
  bubblewrap,
@@ -15,6 +17,6 @@ Depends:
 
 Tests:
  upstream
-Restrictions: allow-stderr
+Restrictions: allow-stderr, isolation-machine
 Depends:
  bubblewrap,

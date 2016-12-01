@@ -1,3 +1,13 @@
+bubblewrap (0.1.4-2) UNRELEASED; urgency=medium
+
+  * d/tests/*: only run tests on a real or virtual machine, not in a
+    container. bubblewrap is effectively already a container, and
+    nesting containers doesn't work particularly well.
+    Unfortunately this means the tests won't work on ci.debian.net,
+    which uses LXC.
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 01 Dec 2016 12:39:51 +0000
+
 bubblewrap (0.1.4-1) unstable; urgency=medium
 
   * New upstream release
