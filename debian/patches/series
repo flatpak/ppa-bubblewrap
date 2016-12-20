@@ -1,4 +1,0 @@
-test-run-be-a-bash-script.patch
-test-run-don-t-assume-we-are-uid-1000.patch
-Adapt-tests-so-they-can-be-run-against-installed-binaries.patch
-Fix-incorrect-nesting-of-backticks-when-finding-a-FUSE-mo.patch
