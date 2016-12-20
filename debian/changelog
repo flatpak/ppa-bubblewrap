@@ -1,10 +1,10 @@
-bubblewrap (0.1.5-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.5-1) unstable; urgency=medium
 
   * New upstream release
     - drop all patches, applied upstream
     - debian/copyright: update for build system additions
 
- -- Simon McVittie <smcv@debian.org>  Tue, 20 Dec 2016 11:21:08 +0000
+ -- Simon McVittie <smcv@debian.org>  Tue, 20 Dec 2016 11:25:23 +0000
 
 bubblewrap (0.1.4-2) unstable; urgency=medium
 
