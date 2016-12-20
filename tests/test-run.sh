@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -xeuo pipefail
 
@@ -32,7 +32,7 @@ assert_file_has_content () {
 }
 
 FUSE_DIR=
-for mp in `cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=1000 | awk '{print $2}'`; do
+for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | awk '{print $2}'); do
     if test -d $mp; then
         echo Using $mp as test fuse mount
         FUSE_DIR=$mp
@@ -47,35 +47,35 @@ if test -x `dirname $UNREADABLE`; then
 fi
 
 # Default arg, bind whole host fs to /, tmpfs on /tmp
-BWRAP="test-bwrap --bind / / --tmpfs /tmp"
+RUN="${BWRAP:-bwrap} --bind / / --tmpfs /tmp"
 
-if ! $BWRAP true; then
+if ! $RUN true; then
     skip Seems like bwrap is not working at all. Maybe setuid is not working
 fi
 
 for ALT in "" "--unshare-user"  "--unshare-pid" "--unshare-user --unshare-pid"; do
     # Test fuse fs as bind source
     if [ x$FUSE_DIR != x ]; then
-        $BWRAP $ALT  --proc /proc --dev /dev --bind $FUSE_DIR /tmp/foo true
+        $RUN $ALT  --proc /proc --dev /dev --bind $FUSE_DIR /tmp/foo true
     fi
     # no --dev => no devpts => no map_root workaround
-    $BWRAP $ALT --proc /proc true
+    $RUN $ALT --proc /proc true
     # No network
-    $BWRAP $ALT --unshare-net --proc /proc --dev /dev true
+    $RUN $ALT --unshare-net --proc /proc --dev /dev true
     # Unreadable file
     echo -n "expect EPERM: "
-    if $BWRAP $ALT --unshare-net --proc /proc --bind /etc/shadow  /tmp/foo cat /etc/shadow; then
+    if $RUN $ALT --unshare-net --proc /proc --bind /etc/shadow  /tmp/foo cat /etc/shadow; then
         assert_not_reached Could read /etc/shadow
     fi
     # Unreadable dir
     if [ x$UNREADABLE != x ]; then
         echo -n "expect EPERM: "
-        if $BWRAP $ALT --unshare-net --proc /proc --dev /dev --bind $UNREADABLE  /tmp/foo cat /tmp/foo ; then
+        if $RUN $ALT --unshare-net --proc /proc --dev /dev --bind $UNREADABLE  /tmp/foo cat /tmp/foo ; then
             assert_not_reached Could read $UNREADABLE
         fi
     fi
 
     # bind dest in symlink (https://github.com/projectatomic/bubblewrap/pull/119)
-    $BWRAP $ALT --dir /tmp/dir --symlink dir /tmp/link --bind /etc /tmp/link true
+    $RUN $ALT --dir /tmp/dir --symlink dir /tmp/link --bind /etc /tmp/link true
 done
 echo OK
