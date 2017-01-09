@@ -1,3 +1,14 @@
+bubblewrap (0.1.5-2) UNRELEASED; urgency=high
+
+  * d/p/Call-setsid-before-executing-sandboxed-code-CVE-2017-5226.patch:
+    Call setsid() before executing sandboxed code, preventing a
+    sandboxed executable invoked with a controlling terminal (for
+    example in Flatpak) from escalating its privileges by injecting
+    keypresses into the controlling terminal with the TIOCSTI
+    ioctl. (Closes: #850702; CVE-2017-5226)
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 09 Jan 2017 18:01:37 +0000
+
 bubblewrap (0.1.5-1) unstable; urgency=medium
 
   * New upstream release
