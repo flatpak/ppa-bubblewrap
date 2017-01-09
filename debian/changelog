@@ -1,4 +1,4 @@
-bubblewrap (0.1.5-2) UNRELEASED; urgency=high
+bubblewrap (0.1.5-2) unstable; urgency=high
 
   * d/p/Call-setsid-before-executing-sandboxed-code-CVE-2017-5226.patch:
     Call setsid() before executing sandboxed code, preventing a
@@ -10,7 +10,7 @@ bubblewrap (0.1.5-2) UNRELEASED; urgency=high
     request. Add him to Uploaders instead, and hand the package over
     to the Utopia Maintenance Team (the same as OSTree and Flatpak).
 
- -- Simon McVittie <smcv@debian.org>  Mon, 09 Jan 2017 18:01:37 +0000
+ -- Simon McVittie <smcv@debian.org>  Mon, 09 Jan 2017 18:09:54 +0000
 
 bubblewrap (0.1.5-1) unstable; urgency=medium
 
