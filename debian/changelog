@@ -1,4 +1,4 @@
-bubblewrap (0.1.6-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.6-1) unstable; urgency=medium
 
   * New upstream release
     - drop the only patch, applied upstream
@@ -7,7 +7,7 @@ bubblewrap (0.1.6-1) UNRELEASED; urgency=medium
     against being able to obtain capabilities
   * debian/bubblewrap.examples: install upstream examples
 
- -- Simon McVittie <smcv@debian.org>  Sat, 14 Jan 2017 22:00:43 +0000
+ -- Simon McVittie <smcv@debian.org>  Sat, 14 Jan 2017 22:18:09 +0000
 
 bubblewrap (0.1.5-2) unstable; urgency=high
 
