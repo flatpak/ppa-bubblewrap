@@ -2,6 +2,9 @@ bubblewrap (0.1.6-1) UNRELEASED; urgency=medium
 
   * New upstream release
     - drop the only patch, applied upstream
+  * debian/patches: update to upstream master for additional fixes
+    to SIGCHLD handling and documentation, and improved hardening
+    against being able to obtain capabilities
 
  -- Simon McVittie <smcv@debian.org>  Sat, 14 Jan 2017 22:00:43 +0000
 

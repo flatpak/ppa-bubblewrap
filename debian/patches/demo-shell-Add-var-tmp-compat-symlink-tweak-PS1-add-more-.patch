@@ -1,0 +1,46 @@
+From: Colin Walters <walters@verbum.org>
+Date: Thu, 5 Jan 2017 09:44:09 -0500
+Subject: demo/shell: Add /var/tmp compat symlink, tweak PS1, add more docs
+
+I was working on rpm-ostree's use of bwrap and realized we weren't setting up
+/var/tmp. I think this should be a best practice for app compatibility.
+
+I also took the opportunity to expand the docs a bit, and overriding PS1 helps
+users know they're in the container shell.
+
+Closes: #137
+Approved by: alexlarsson
+Origin: upstream, 0.1.7, commit:e8e47a9dd4003c0dfd814245dc971cbd2f66e4cc
+---
+ demos/bubblewrap-shell.sh | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/demos/bubblewrap-shell.sh b/demos/bubblewrap-shell.sh
+index da06d49..96b87b6 100755
+--- a/demos/bubblewrap-shell.sh
++++ b/demos/bubblewrap-shell.sh
+@@ -1,8 +1,15 @@
+ #!/usr/bin/env bash
+-# Use bubblewrap to run /bin/sh in the host's rootfs.
++# Use bubblewrap to run /bin/sh reusing the host OS binaries (/usr), but with
++# separate /tmp, /var, /run, and /etc. For /etc we just inherit the host's
++# resolv.conf, and set up "stub" passwd/group files.
++#
++# You can build on this example; for example, use --unshare-net to disable
++# networking.
+ set -euo pipefail
+ (exec bwrap --ro-bind /usr /usr \
+       --dir /tmp \
++      --dir /var \
++      --symlink ../tmp var/tmp \
+       --proc /proc \
+       --dev /dev \
+       --ro-bind /etc/resolv.conf /etc/resolv.conf \
+@@ -14,6 +21,7 @@ set -euo pipefail
+       --unshare-pid \
+       --dir /run/user/$(id -u) \
+       --setenv XDG_RUNTIME_DIR "/run/user/`id -u`" \
++      --setenv PS1 "bwrap-demo$ " \
+       --file 11 /etc/passwd \
+       --file 12 /etc/group \
+       /bin/sh) \

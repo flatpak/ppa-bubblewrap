@@ -1,0 +1,30 @@
+From: Colin Walters <walters@verbum.org>
+Date: Mon, 9 Jan 2017 14:52:29 -0500
+Subject: man: Correct namespace user -> mount
+
+Closes: #141
+Closes: #144
+Approved by: valoq
+Origin: upstream, 0.1.7, commit:9d368eece47771b99e071bd8da3126aecf29d8ae
+---
+ bwrap.xml | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/bwrap.xml b/bwrap.xml
+index 507f66f..1218c9e 100644
+--- a/bwrap.xml
++++ b/bwrap.xml
+@@ -53,9 +53,10 @@
+   the namespace.
+ </para>
+ <para>
+-  By default, <command>bwrap</command> creates a new user namespace for the sandbox.
+-  Optionally it also sets up new ipc, pid, network and uts namespaces. The application
+-  in the sandbox can be made to run with a different UID and GID.
++  By default, <command>bwrap</command> creates a new mount namespace for the sandbox.
++  Optionally it also sets up new user, ipc, pid, network and uts namespaces (but note the
++  user namespace is required if bwrap is not installed setuid root).
++  The application in the sandbox can be made to run with a different UID and GID.
+ </para>
+ <para>
+   If needed (e.g. when using a PID namespace) <command>bwrap</command>

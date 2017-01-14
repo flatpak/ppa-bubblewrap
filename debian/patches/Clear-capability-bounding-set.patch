@@ -1,0 +1,67 @@
+From: Alexander Larsson <alexl@redhat.com>
+Date: Fri, 13 Jan 2017 09:44:28 +0100
+Subject: Clear capability bounding set
+
+The capability bounding set is a limit on what capabilities can
+be regained at execve(). Due to PR_NO_NEW_PRIVS we should be safe
+from any such issues, but we may as well clear it anyway.
+
+Note, we also have to clear it in the new namespace if user namespaces
+are enabled, because the kernel gives us a new set of full bounds in
+the user namespace.
+
+See https://github.com/projectatomic/bubblewrap/issues/136 for some
+discussion about this.
+
+Closes: #149
+Approved by: cgwalters
+Origin: upstream, 0.1.7, commit:b35f84a33199ab09ff916f90df131ee91dc0ff68
+---
+ bubblewrap.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/bubblewrap.c b/bubblewrap.c
+index 9e3b847..f0adb07 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -469,6 +469,19 @@ has_caps (void)
+   return data[0].permitted != 0 || data[1].permitted != 0;
+ }
+ 
++static void
++drop_cap_bounding_set (void)
++{
++  unsigned long cap;
++
++  for (cap = 0; cap <= 63; cap++)
++    {
++      int res = prctl (PR_CAPBSET_DROP, cap, 0, 0, 0);
++      if (res == -1 && errno != EINVAL)
++        die_with_error ("Dropping capability %ld from bounds", cap);
++    }
++}
++
+ /* This acquires the privileges that the bwrap will need it to work.
+  * If bwrap is not setuid, then this does nothing, and it relies on
+  * unprivileged user namespaces to be used. This case is
+@@ -517,6 +530,9 @@ acquire_privs (void)
+       if (new_fsuid != real_uid)
+         die ("Unable to set fsuid (was %d)", (int)new_fsuid);
+ 
++      /* We never need capabilies after execve(), so lets drop everything from the bounding set */
++      drop_cap_bounding_set ();
++
+       /* Keep only the required capabilities for setup */
+       set_required_caps ();
+     }
+@@ -535,6 +551,10 @@ acquire_privs (void)
+ static void
+ switch_to_user_with_privs (void)
+ {
++  /* If we're in a new user namespace, we got back the bounding set, clear it again */
++  if (opt_unshare_user)
++    drop_cap_bounding_set ();
++
+   if (!is_privileged)
+     return;
+ 
