@@ -5,6 +5,7 @@ bubblewrap (0.1.6-1) UNRELEASED; urgency=medium
   * debian/patches: update to upstream master for additional fixes
     to SIGCHLD handling and documentation, and improved hardening
     against being able to obtain capabilities
+  * debian/bubblewrap.examples: install upstream examples
 
  -- Simon McVittie <smcv@debian.org>  Sat, 14 Jan 2017 22:00:43 +0000
 
