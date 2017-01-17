@@ -8,6 +8,8 @@ bubblewrap (0.1.6-2) UNRELEASED; urgency=medium
     TIOCSTI ioctl with a seccomp filter instead (as Flatpak does).
     - d/control: add Breaks on versions of Flatpak that did not
       load the necessary seccomp filter to prevent CVE-2017-5226
+  * d/p/demos-bubblewrap-shell.sh-Unshare-all-namespaces.patch:
+    Add patch from upstream to improve example code
 
  -- Simon McVittie <smcv@debian.org>  Tue, 17 Jan 2017 22:43:51 +0000
 
