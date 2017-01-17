@@ -1,3 +1,16 @@
+bubblewrap (0.1.6-2) UNRELEASED; urgency=medium
+
+  * d/p/Make-the-call-to-setsid-optional-with-new-session.patch:
+    Add patch from upstream to make the setsid() that addresses
+    CVE-2017-5226 optional, because it breaks interactive shells.
+    Users of bubblewrap to confine untrusted programs should either
+    add --new-session to the bwrap command line, or prevent the
+    TIOCSTI ioctl with a seccomp filter instead (as Flatpak does).
+    - d/control: add Breaks on versions of Flatpak that did not
+      load the necessary seccomp filter to prevent CVE-2017-5226
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 17 Jan 2017 22:43:51 +0000
+
 bubblewrap (0.1.6-1) unstable; urgency=medium
 
   * New upstream release

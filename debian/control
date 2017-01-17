@@ -25,6 +25,8 @@ Multi-arch: foreign
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
+Breaks:
+ flatpak (<< 0.8.0-2~),
 Description: setuid wrapper for unprivileged chroot and namespace manipulation
  Core execution engine for unprivileged containers that works as a setuid
  binary on kernels without user namespaces.

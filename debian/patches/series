@@ -2,3 +2,4 @@ man-Correct-namespace-user-mount.patch
 demo-shell-Add-var-tmp-compat-symlink-tweak-PS1-add-more-.patch
 Handle-inherited-children-dying.patch
 Clear-capability-bounding-set.patch
+Make-the-call-to-setsid-optional-with-new-session.patch
