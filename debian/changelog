@@ -1,4 +1,4 @@
-bubblewrap (0.1.6-2) UNRELEASED; urgency=medium
+bubblewrap (0.1.6-2) unstable; urgency=medium
 
   * d/p/Make-the-call-to-setsid-optional-with-new-session.patch:
     Add patch from upstream to make the setsid() that addresses
@@ -20,7 +20,7 @@ bubblewrap (0.1.6-2) UNRELEASED; urgency=medium
     --unshare-all and --share-net, for a more whitelist-based approach
     to sharing namespaces with the parent.
 
- -- Simon McVittie <smcv@debian.org>  Tue, 17 Jan 2017 22:43:51 +0000
+ -- Simon McVittie <smcv@debian.org>  Wed, 18 Jan 2017 00:56:19 +0000
 
 bubblewrap (0.1.6-1) unstable; urgency=medium
 
