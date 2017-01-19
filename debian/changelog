@@ -4,7 +4,7 @@ bubblewrap (0.1.7-1) unstable; urgency=medium
     - effectively the same as 0.1.6-2
     - drop all patches
 
- -- Simon McVittie <smcv@debian.org>  Thu, 19 Jan 2017 14:32:49 +0000
+ -- Simon McVittie <smcv@debian.org>  Thu, 19 Jan 2017 14:33:46 +0000
 
 bubblewrap (0.1.6-2) unstable; urgency=medium
 
