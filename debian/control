@@ -7,8 +7,7 @@ Uploaders:
  Simon McVittie <smcv@debian.org>,
 Build-Depends:
  bash-completion,
- debhelper (>= 9),
- dh-autoreconf,
+ debhelper (>= 10),
  docbook-xsl,
  libcap-dev,
  libselinux1-dev (>= 2.1.9),
