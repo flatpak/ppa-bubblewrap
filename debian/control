@@ -8,6 +8,7 @@ Uploaders:
 Build-Depends:
  bash-completion,
  debhelper (>= 10),
+ docbook-xml,
  docbook-xsl,
  libcap-dev,
  libselinux1-dev (>= 2.1.9),

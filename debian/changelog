@@ -3,6 +3,7 @@ bubblewrap (0.1.8-1) UNRELEASED; urgency=medium
   * New upstream release
     - Stop trying to run tests/test-basic.sh, it no longer exists
     - Build-depend on python, one test now needs it
+  * Build-depend on docbook-xml for the documentation DTD
   * Move to debhelper compat level 10
     - drop dh-autoreconf, it is now done by default
     - drop explicit --parallel, it is now the default
