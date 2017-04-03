@@ -1,5 +1,6 @@
-bubblewrap (0.1.7-2) UNRELEASED; urgency=medium
+bubblewrap (0.1.8-1) UNRELEASED; urgency=medium
 
+  * New upstream release
   * Move to debhelper compat level 10
     - drop dh-autoreconf, it is now done by default
     - drop explicit --parallel, it is now the default
