@@ -1,4 +1,4 @@
-bubblewrap (0.1.8-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.8-1) experimental; urgency=medium
 
   * New upstream release
     - Stop trying to run tests/test-basic.sh, it no longer exists
@@ -8,7 +8,7 @@ bubblewrap (0.1.8-1) UNRELEASED; urgency=medium
     - drop dh-autoreconf, it is now done by default
     - drop explicit --parallel, it is now the default
 
- -- Simon McVittie <smcv@debian.org>  Wed, 22 Feb 2017 09:57:13 +0000
+ -- Simon McVittie <smcv@debian.org>  Mon, 03 Apr 2017 18:35:44 +0100
 
 bubblewrap (0.1.7-1) unstable; urgency=medium
 
