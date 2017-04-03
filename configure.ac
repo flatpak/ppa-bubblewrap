@@ -1,5 +1,5 @@
 AC_PREREQ([2.63])
-AC_INIT([bubblewrap], [0.1.7], [atomic-devel@projectatomic.io])
+AC_INIT([bubblewrap], [0.1.8], [atomic-devel@projectatomic.io])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -89,7 +89,7 @@ AC_SUBST(WARN_CFLAGS)
 
 AC_ARG_WITH(priv-mode,
             AS_HELP_STRING([--with-priv-mode=setuid/none],
-                           [How to set privilege-raising during make install)]),
+                           [How to set privilege-raising during make install]),
             [],
             [with_priv_mode="none"])
 
@@ -99,6 +99,16 @@ AC_ARG_ENABLE(sudo,
               AS_HELP_STRING([--enable-sudo],[Use sudo to set privileged mode on binaries during install (only needed if --with-priv-mode used)]),
               [SUDO_BIN="sudo"], [SUDO_BIN=""])
 AC_SUBST([SUDO_BIN])
+
+AC_ARG_ENABLE(require-userns,
+            AS_HELP_STRING([--enable-require-userns=yes/no (default no)],
+                           [Require user namespaces by default when installed suid]),
+            [],
+            [enable_require_userns="no"])
+
+AS_IF([ test "x$enable_require_userns" = "xyes" ], [
+        AC_DEFINE(ENABLE_REQUIRE_USERNS, 1, [Define if userns should be used by default in suid mode])
+     ])
 
 AC_CONFIG_FILES([
 Makefile
@@ -112,5 +122,6 @@ echo "
     man pages (xsltproc):                         $enable_man
     SELinux:                                      $have_selinux
     setuid mode on make install:                  $with_priv_mode
+    require default userns:                       $enable_require_userns
     mysteriously satisfying to pop:               yes"
 echo ""
