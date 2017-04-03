@@ -20,3 +20,4 @@ Tests:
 Restrictions: allow-stderr, isolation-machine
 Depends:
  bubblewrap,
+ python,
