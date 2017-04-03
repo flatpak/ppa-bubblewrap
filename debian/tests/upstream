@@ -2,5 +2,4 @@
 
 set -e
 
-tests/test-basic.sh
-tests/test-run.sh
+exec tests/test-run.sh

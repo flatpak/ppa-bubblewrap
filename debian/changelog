@@ -4,6 +4,7 @@ bubblewrap (0.1.8-1) UNRELEASED; urgency=medium
   * Move to debhelper compat level 10
     - drop dh-autoreconf, it is now done by default
     - drop explicit --parallel, it is now the default
+  * Stop trying to run tests/test-basic.sh, it no longer exists
 
  -- Simon McVittie <smcv@debian.org>  Wed, 22 Feb 2017 09:57:13 +0000
 
