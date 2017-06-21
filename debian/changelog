@@ -1,7 +1,8 @@
-bubblewrap (0.1.8-2) UNRELEASED; urgency=medium
+bubblewrap (0.1.8-2) unstable; urgency=medium
 
   * Standards-Version: 4.0.0
     - Use https URL for format of debian/copyright
+  * Upload to unstable
 
  -- Simon McVittie <smcv@debian.org>  Wed, 21 Jun 2017 14:14:20 +0100
 
