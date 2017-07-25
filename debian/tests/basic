@@ -1,13 +1,19 @@
-#!/usr/bin/bats
-# vim:set sw=4 sts=4 et ft=sh:
+#!/usr/bin/perl
+# vim:set sw=4 sts=4 et ft=perl:
 
-set -e
+use strict;
+use warnings;
+use Test::More;
+use IPC::Run qw(run);
 
-. debian/tests/testlib.sh
-
-@test "Basic usage" {
-    ret=0
-    run bwrap --ro-bind / / /usr/bin/id
-    is "$status" 0
-    is "$output" "$(id)"
+sub run_ok {
+    my $argv = shift;
+    my $debug = join(' ', @$argv);
+    ok(run($argv, @_), qq{"$debug" should succeed});
 }
+
+my $out;
+run_ok([qw(bwrap --ro-bind / / /usr/bin/id)], '<', \undef, '>', \$out);
+is($out, `id`);
+
+done_testing;

@@ -1,23 +1,13 @@
 Tests:
  basic
  dev
- userns
-Restrictions: isolation-machine
-Depends:
- bats,
- bubblewrap,
-
-Tests:
  net
-Restrictions: isolation-machine
-Depends:
- bats,
- bubblewrap,
- iproute2,
-
-Tests:
  upstream
+ userns
 Restrictions: allow-stderr, isolation-machine
 Depends:
  bubblewrap,
+ iproute2,
+ libipc-run-perl,
+ perl,
  python,
