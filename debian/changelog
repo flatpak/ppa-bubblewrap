@@ -1,10 +1,10 @@
-bubblewrap (0.1.8-3) UNRELEASED; urgency=medium
+bubblewrap (0.1.8-3) unstable; urgency=medium
 
   * Use Perl rather than shell script for the autopkgtest test cases.
     This avoids needing the uncommon bats package, or writing shell
     scripts.
 
- -- Simon McVittie <smcv@debian.org>  Tue, 25 Jul 2017 20:24:19 +0100
+ -- Simon McVittie <smcv@debian.org>  Tue, 25 Jul 2017 21:10:13 +0100
 
 bubblewrap (0.1.8-2) unstable; urgency=medium
 
