@@ -1,3 +1,14 @@
+bubblewrap (0.1.8+dfsg-1) UNRELEASED; urgency=medium
+
+  * Repack tarball to remove CC-BY-ND cat picture (Closes: #876980)
+    - d/copyright: Add Files-Excluded
+    - d/watch: Adjust to add/remove +dfsg suffix
+    - Add patch from upstream removing a link to it from the README
+  * d/watch: Take the opportunity to upgrade to v4 and use @PACKAGE@,
+    @ANY_VERSION@, @ARCHIVE_EXT@ tokens
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 27 Sep 2017 11:30:32 +0100
+
 bubblewrap (0.1.8-3) unstable; urgency=medium
 
   * Use Perl rather than shell script for the autopkgtest test cases.
