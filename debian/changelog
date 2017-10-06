@@ -2,6 +2,8 @@ bubblewrap (0.1.8+git26+g6ddebee-2) UNRELEASED; urgency=medium
 
   * d/gbp.conf: Branch for experimental
   * New upstream snapshot v0.1.8-26-g6ddebee
+    - d/copyright: Remove Files-Excluded, the non-DFSG file was removed
+      upstream
     - d/patches: Remove
   * d/watch: Adjust to remove +git... suffix
 
