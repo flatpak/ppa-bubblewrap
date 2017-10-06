@@ -3,6 +3,9 @@
 set -xeuo pipefail
 
 srcd=$(cd $(dirname $0) && pwd)
+
+. ${srcd}/libtest-core.sh
+
 bn=$(basename $0)
 tempdir=$(mktemp -d /var/tmp/tap-test.XXXXXX)
 touch ${tempdir}/.testtmp
@@ -19,20 +22,6 @@ cd ${tempdir}
 
 : "${BWRAP:=bwrap}"
 
-skip () {
-    echo $@ 1>&2; exit 77
-}
-
-assert_not_reached () {
-    echo $@ 1>&2; exit 1
-}
-
-assert_file_has_content () {
-    if ! grep -q -e "$2" "$1"; then
-        echo 1>&2 "File '$1' doesn't match regexp '$2'"; exit 1
-    fi
-}
-
 FUSE_DIR=
 for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | awk '{print $2}'); do
     if test -d $mp; then
@@ -42,9 +31,15 @@ for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | a
     fi
 done
 
+if test "$(id -u)" = "0"; then
+    is_uidzero=true
+else
+    is_uidzero=false
+fi
+
 # This is supposed to be an otherwise readable file in an unreadable (by the user) dir
 UNREADABLE=/root/.bashrc
-if test -x `dirname $UNREADABLE`; then
+if ${is_uidzero} || test -x `dirname $UNREADABLE`; then
     UNREADABLE=
 fi
 
@@ -70,7 +65,15 @@ for ALT in "" "--unshare-user-try"  "--unshare-pid" "--unshare-user-try --unshar
     $RUN $ALT --unshare-net --proc /proc --dev /dev true
     # Unreadable file
     echo -n "expect EPERM: "
-    if $RUN $ALT --unshare-net --proc /proc --bind /etc/shadow  /tmp/foo cat /etc/shadow; then
+
+    # Test caps when bwrap is not setuid
+    if ! test -u ${BWRAP}; then
+        CAP="--cap-add ALL"
+    else
+        CAP=""
+    fi
+
+    if ! ${is_uidzero} && $RUN $CAP $ALT --unshare-net --proc /proc --bind /etc/shadow  /tmp/foo cat /etc/shadow; then
         assert_not_reached Could read /etc/shadow
     fi
     # Unreadable dir
@@ -84,6 +87,36 @@ for ALT in "" "--unshare-user-try"  "--unshare-pid" "--unshare-user-try --unshar
     # bind dest in symlink (https://github.com/projectatomic/bubblewrap/pull/119)
     $RUN $ALT --dir /tmp/dir --symlink dir /tmp/link --bind /etc /tmp/link true
 done
+
+# Test devices
+$RUN --unshare-pid --dev /dev ls -al /dev/{stdin,stdout,stderr,null,random,urandom,fd,core} >/dev/null
+
+# Test --as-pid-1
+$RUN --unshare-pid --as-pid-1 --bind / / bash -c 'echo $$' > as_pid_1.txt
+assert_file_has_content as_pid_1.txt "1"
+
+if ! ${is_uidzero}; then
+    # When invoked as non-root, check that by default we have no caps left
+    for OPT in "" "--unshare-user-try --as-pid-1" "--unshare-user-try" "--as-pid-1"; do
+        $RUN $OPT --unshare-pid getpcaps 1 2> /tmp/caps
+        grep -q ": =$" /tmp/caps
+    done
+else
+    capsh --print > caps.orig
+    for OPT in "" "--as-pid-1"; do
+        $RUN $OPT --unshare-pid capsh --print >caps.test
+        diff -u caps.orig caps.test
+    done
+    # And test that we can drop all, as well as specific caps
+    $RUN $OPT --cap-drop ALL --unshare-pid capsh --print >caps.test
+    assert_file_has_content caps.test 'Current: =$'
+    # Check for dropping kill/fowner (we assume all uid 0 callers have this)
+    $RUN $OPT --cap-drop CAP_KILL --cap-drop CAP_FOWNER --unshare-pid capsh --print >caps.test
+    assert_not_file_has_content caps.test '^Current: =.*cap_kill'
+    assert_not_file_has_content caps.test '^Current: =.*cap_fowner'
+    # But we should still have net_bind_service for example
+    assert_file_has_content caps.test '^Current: =.*cap_net_bind_service'
+fi
 
 # Test --die-with-parent
 
