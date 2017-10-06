@@ -55,6 +55,7 @@ non-root operation, such as:
 
  - [Flatpak](http://www.flatpak.org)
  - [rpm-ostree unprivileged](https://github.com/projectatomic/rpm-ostree/pull/209)
+ - [bwrap-oci](https://github.com/projectatomic/bwrap-oci)
 
 We would also like to see this be available in Kubernetes/OpenShift
 clusters.  Having the ability for unprivileged users to use container
@@ -173,7 +174,3 @@ Whats with the name ?!
 The name bubblewrap was chosen to convey that this
 tool runs as the parent of the application (so wraps it in some sense) and creates
 a protective layer (the sandbox) around it.
-
-![](bubblewrap.jpg)
-
-(Bubblewrap cat by [dancing_stupidity](https://www.flickr.com/photos/27549668@N03/))
