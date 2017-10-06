@@ -6,6 +6,7 @@ bubblewrap (0.1.8+git26+g6ddebee-2) UNRELEASED; urgency=medium
       upstream
     - d/patches: Remove
   * d/watch: Adjust to remove +git... suffix
+  * d/tests/upstream-as-root: Re-run upstream tests as root if allowed
 
  -- Simon McVittie <smcv@debian.org>  Fri, 06 Oct 2017 13:25:36 +0100
 

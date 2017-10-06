@@ -11,3 +11,13 @@ Depends:
  libipc-run-perl,
  perl,
  python,
+
+Tests:
+ upstream-as-root
+Restrictions: allow-stderr, isolation-machine, needs-root
+Depends:
+ bubblewrap,
+ iproute2,
+ libipc-run-perl,
+ perl,
+ python,
