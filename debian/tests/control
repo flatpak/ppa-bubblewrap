@@ -8,6 +8,7 @@ Restrictions: allow-stderr, isolation-machine
 Depends:
  bubblewrap,
  iproute2,
+ libcap2-bin,
  libipc-run-perl,
  perl,
  python,
@@ -18,6 +19,7 @@ Restrictions: allow-stderr, isolation-machine, needs-root
 Depends:
  bubblewrap,
  iproute2,
+ libcap2-bin,
  libipc-run-perl,
  perl,
  python,
