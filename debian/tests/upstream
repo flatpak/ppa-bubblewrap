@@ -2,7 +2,4 @@
 
 set -e
 
-# The test needs libcap2-bin tools which are in /sbin
-export PATH="$PATH:/usr/sbin:/sbin"
-
 exec tests/test-run.sh

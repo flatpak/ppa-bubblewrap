@@ -1,15 +1,13 @@
-bubblewrap (0.1.8+git26+g6ddebee-2) UNRELEASED; urgency=medium
+bubblewrap (0.1.8+git37+g27eb690-1) UNRELEASED; urgency=medium
 
   * d/gbp.conf: Branch for experimental
-  * New upstream snapshot v0.1.8-26-g6ddebee
+  * New upstream snapshot v0.1.8-37-g27eb690
     - d/copyright: Remove Files-Excluded, the non-DFSG file was removed
       upstream
     - d/patches: Remove
   * d/watch: Adjust to remove +git... suffix
   * d/tests/upstream-as-root: Re-run upstream tests as root if allowed
   * d/tests/control: Depend on libcap2-bin, for capsh and getpcaps
-  * d/tests/upstream: Make sure non-root users have libcap2-bin tools
-    in PATH
 
  -- Simon McVittie <smcv@debian.org>  Fri, 06 Oct 2017 13:25:36 +0100
 
