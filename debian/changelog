@@ -1,4 +1,4 @@
-bubblewrap (0.1.8+git37+g27eb690-1) UNRELEASED; urgency=medium
+bubblewrap (0.1.8+git37+g27eb690-1) experimental; urgency=medium
 
   * d/gbp.conf: Branch for experimental
   * New upstream snapshot v0.1.8-37-g27eb690
@@ -9,7 +9,7 @@ bubblewrap (0.1.8+git37+g27eb690-1) UNRELEASED; urgency=medium
   * d/tests/upstream-as-root: Re-run upstream tests as root if allowed
   * d/tests/control: Depend on libcap2-bin, for capsh and getpcaps
 
- -- Simon McVittie <smcv@debian.org>  Fri, 06 Oct 2017 13:25:36 +0100
+ -- Simon McVittie <smcv@debian.org>  Sat, 07 Oct 2017 14:19:53 +0100
 
 bubblewrap (0.1.8+dfsg-1) unstable; urgency=medium
 
