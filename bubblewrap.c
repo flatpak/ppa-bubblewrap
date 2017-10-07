@@ -1321,7 +1321,7 @@ parse_args_recurse (int          *argcp,
         {
           int the_fd;
           char *endptr;
-          cleanup_free char *data = NULL;
+          char *data = NULL;
           const char *p, *data_end;
           size_t data_len;
           cleanup_free const char **data_argv = NULL;
@@ -1342,6 +1342,7 @@ parse_args_recurse (int          *argcp,
           data = load_file_data (the_fd, &data_len);
           if (data == NULL)
             die_with_error ("Can't read --args data");
+          (void) close (the_fd);
 
           data_end = data + data_len;
           data_argc = 0;
