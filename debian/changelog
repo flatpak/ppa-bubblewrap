@@ -1,4 +1,4 @@
-bubblewrap (0.2.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.2.0-1) unstable; urgency=medium
 
   * New upstream release
   * d/watch: Import release tarballs
@@ -7,7 +7,7 @@ bubblewrap (0.2.0-1) UNRELEASED; urgency=medium
   * d/dist/: Add upstream README.md and demos/ directory, which are
     missing from the official tarball releases
 
- -- Simon McVittie <smcv@debian.org>  Mon, 09 Oct 2017 17:31:08 +0100
+ -- Simon McVittie <smcv@debian.org>  Mon, 09 Oct 2017 17:31:27 +0100
 
 bubblewrap (0.1.8+git37+g27eb690-1) experimental; urgency=medium
 
