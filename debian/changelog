@@ -1,6 +1,7 @@
 bubblewrap (0.1.8+git37+g27eb690-2) UNRELEASED; urgency=medium
 
   * d/watch: Import release tarballs
+  * d/gbp.conf: Merge upstream git tags into the tarball imports
 
  -- Simon McVittie <smcv@debian.org>  Mon, 09 Oct 2017 16:42:37 +0100
 
