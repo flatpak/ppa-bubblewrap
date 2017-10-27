@@ -6,6 +6,7 @@ Uploaders:
  Laszlo Boszormenyi (GCS) <gcs@debian.org>,
  Simon McVittie <smcv@debian.org>,
 Build-Depends:
+ automake (>= 1.14.1),
  bash-completion,
  debhelper (>= 10),
  docbook-xml,
