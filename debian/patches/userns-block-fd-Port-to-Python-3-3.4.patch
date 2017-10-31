@@ -1,0 +1,40 @@
+From: Simon McVittie <smcv@collabora.com>
+Date: Tue, 31 Oct 2017 15:27:43 +0000
+Subject: userns-block-fd: Port to Python 3 (>= 3.4)
+
+In Python 3, os.write() takes a bytestring (bytes object), not a
+text string (str object).
+
+In Python >= 3.4, the result of os.pipe() is close-on-exec
+(non-inheritable) by default, so undo that where needed.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
+---
+ demos/userns-block-fd.py | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/demos/userns-block-fd.py b/demos/userns-block-fd.py
+index 8fa3532..fe9f085 100755
+--- a/demos/userns-block-fd.py
++++ b/demos/userns-block-fd.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/python3
+ 
+ import os, select, subprocess, json
+ 
+@@ -19,10 +19,12 @@ if pid != 0:
+     subprocess.call(["newuidmap", child_pid, "0", str(os.getuid()), "1"])
+     subprocess.call(["newgidmap", child_pid, "0", str(os.getgid()), "1"])
+ 
+-    os.write(userns_block[1], '1')
++    os.write(userns_block[1], b'1')
+ else:
+     os.close(pipe_info[0])
++    os.set_inheritable(pipe_info[1], True)
+     os.close(userns_block[1])
++    os.set_inheritable(userns_block[0], True)
+ 
+     args = ["bwrap",
+             "bwrap",

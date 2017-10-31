@@ -1,0 +1,23 @@
+From: Simon McVittie <smcv@collabora.com>
+Date: Tue, 31 Oct 2017 15:20:49 +0000
+Subject: userns-block-fd: Assume Python is in /usr
+
+On systems with the /usr merge it doesn't matter, and on systems
+without the /usr merge it's almost certainly in /usr.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
+---
+ demos/userns-block-fd.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/demos/userns-block-fd.py b/demos/userns-block-fd.py
+index 0677a0d..6991bd5 100755
+--- a/demos/userns-block-fd.py
++++ b/demos/userns-block-fd.py
+@@ -1,4 +1,4 @@
+-#!/bin/python
++#!/usr/bin/python
+ 
+ import os, select, subprocess, json
+ 

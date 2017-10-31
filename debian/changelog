@@ -7,6 +7,7 @@ bubblewrap (0.2.0-2) UNRELEASED; urgency=medium
   * Set Rules-Requires-Root: no
   * d/dist/, d/patches/dist/: Add missing files via a patch instead of
     shipping them in debian/
+  * Add patches to make demos/userns-block-fd.py work on Debian
 
  -- Simon McVittie <smcv@debian.org>  Fri, 27 Oct 2017 15:56:50 +0100
 
