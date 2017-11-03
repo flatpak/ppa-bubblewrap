@@ -13,7 +13,7 @@ Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/demos/userns-block-fd.py b/demos/userns-block-fd.py
-index 6991bd5..8fa3532 100755
+index a390cce..67b6d8b 100755
 --- a/demos/userns-block-fd.py
 +++ b/demos/userns-block-fd.py
 @@ -33,4 +33,4 @@ else:

@@ -1,4 +1,4 @@
 dist/Add-missing-files-from-upstream-git.patch
-userns-block-fd-Assume-Python-is-in-usr.patch
+userns-block-fd-Search-PATH-for-python.patch
 userns-block-fd-Search-the-PATH-for-bwrap.patch
-userns-block-fd-Port-to-Python-3-3.4.patch
+userns-block-fd-Add-support-for-Python-3.patch

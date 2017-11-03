@@ -1,9 +1,9 @@
 From: Simon McVittie <smcv@collabora.com>
 Date: Tue, 31 Oct 2017 15:20:49 +0000
-Subject: userns-block-fd: Assume Python is in /usr
+Subject: userns-block-fd: Search $PATH for python
 
-On systems with the /usr merge it doesn't matter, and on systems
-without the /usr merge it's almost certainly in /usr.
+On systems without the /usr merge, it's almost certainly in /usr,
+so this script would have failed.
 
 Signed-off-by: Simon McVittie <smcv@collabora.com>
 Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
@@ -12,12 +12,12 @@ Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/demos/userns-block-fd.py b/demos/userns-block-fd.py
-index 0677a0d..6991bd5 100755
+index 0677a0d..a390cce 100755
 --- a/demos/userns-block-fd.py
 +++ b/demos/userns-block-fd.py
 @@ -1,4 +1,4 @@
 -#!/bin/python
-+#!/usr/bin/python
++#!/usr/bin/env python
  
  import os, select, subprocess, json
  
