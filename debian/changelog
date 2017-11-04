@@ -1,7 +1,7 @@
 bubblewrap (0.2.0-3) UNRELEASED; urgency=medium
 
-  * d/patches/userns-block-fd-*.patch: Update patches to match revised
-    upstream patch submission, with both Python 2 and 3 support
+  * d/patches/0.2.1/userns-block-fd-*.patch: Update patches to match
+    what was merged upstream, with both Python 2 and 3 support
 
  -- Simon McVittie <smcv@debian.org>  Fri, 03 Nov 2017 12:07:39 +0000
 

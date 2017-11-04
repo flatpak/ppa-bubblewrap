@@ -16,7 +16,10 @@ In Python >= 3.4, the result of os.pipe() is close-on-exec
 (non-inheritable) by default, so undo that where needed.
 
 Signed-off-by: Simon McVittie <smcv@collabora.com>
-Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
+
+Closes: #246
+Approved by: giuseppe
+Applied-upstream: 0.2.1, commit:3c488585bd9897c842c1708ddb413adee5a9b43a
 ---
  demos/userns-block-fd.py | 8 ++++++--
  1 file changed, 6 insertions(+), 2 deletions(-)

@@ -7,7 +7,10 @@ common use of a demo script than a just-compiled bwrap, and is
 consistent with the shell scripts.
 
 Signed-off-by: Simon McVittie <smcv@collabora.com>
-Forwarded: https://github.com/projectatomic/bubblewrap/pull/246
+
+Closes: #246
+Approved by: giuseppe
+Applied-upstream: 0.2.1, commit:b8fa270e8937ed26e4e684050d221202b475c708
 ---
  demos/userns-block-fd.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
