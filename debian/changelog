@@ -1,10 +1,10 @@
-bubblewrap (0.2.0-3) UNRELEASED; urgency=medium
+bubblewrap (0.2.0-3) unstable; urgency=medium
 
   * d/patches/0.2.1/userns-block-fd-*.patch: Update patches to match
     what was merged upstream, with both Python 2 and 3 support
   * Standards-Version: 4.1.2 (no changes required)
 
- -- Simon McVittie <smcv@debian.org>  Fri, 03 Nov 2017 12:07:39 +0000
+ -- Simon McVittie <smcv@debian.org>  Fri, 15 Dec 2017 15:01:39 +0000
 
 bubblewrap (0.2.0-2) unstable; urgency=medium
 
