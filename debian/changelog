@@ -5,6 +5,7 @@ bubblewrap (0.2.0-4) UNRELEASED; urgency=medium
   * d/control, d/tests/control,
     d/p/debian/Use-Python-3-for-test-demo-code.patch:
     Use Python 3 for tests and demo code
+  * d/control: Annotate python3 dependency with <!nocheck>
 
  -- Simon McVittie <smcv@debian.org>  Mon, 15 Jan 2018 01:17:24 +0000
 
