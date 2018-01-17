@@ -11,7 +11,7 @@ Depends:
  libcap2-bin,
  libipc-run-perl,
  perl,
- python,
+ python3,
 
 Tests:
  upstream-as-root
@@ -22,4 +22,4 @@ Depends:
  libcap2-bin,
  libipc-run-perl,
  perl,
- python,
+ python3,

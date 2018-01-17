@@ -14,7 +14,7 @@ Build-Depends:
  libcap-dev,
  libselinux1-dev (>= 2.1.9),
  pkg-config,
- python,
+ python3,
  xsltproc,
 Standards-Version: 4.1.3
 Homepage: https://github.com/projectatomic/bubblewrap
