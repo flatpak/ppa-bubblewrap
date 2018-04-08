@@ -75,6 +75,7 @@ int opt_userns_block_fd = -1;
 int opt_info_fd = -1;
 int opt_seccomp_fd = -1;
 const char *opt_sandbox_hostname = NULL;
+char *opt_args_data = NULL;  /* owned */
 
 #define CAP_TO_MASK_0(x) (1L << ((x) & 31))
 #define CAP_TO_MASK_1(x) CAP_TO_MASK_0(x - 32)
@@ -583,9 +584,15 @@ prctl_caps (uint32_t *caps, bool do_cap_bounding, bool do_set_ambient)
 
       if (keep && do_set_ambient)
         {
+#ifdef PR_CAP_AMBIENT
           int res = prctl (PR_CAP_AMBIENT, PR_CAP_AMBIENT_RAISE, cap, 0, 0);
           if (res == -1 && !(errno == EINVAL || errno == EPERM))
             die_with_error ("Adding ambient capability %ld", cap);
+#else
+          /* We ignore the EINVAL that results from not having PR_CAP_AMBIENT
+           * in the current kernel at runtime, so also ignore not having it
+           * in the current kernel headers at compile-time */
+#endif
         }
 
       if (!keep && do_cap_bounding)
@@ -766,7 +773,7 @@ write_uid_gid_map (uid_t sandbox_uid,
   else
     dir = xasprintf ("%d", pid);
 
-  dir_fd = openat (proc_fd, dir, O_RDONLY | O_PATH);
+  dir_fd = openat (proc_fd, dir, O_PATH);
   if (dir_fd < 0)
     die_with_error ("open /proc/%s failed", dir);
 
@@ -973,7 +980,7 @@ setup_newroot (bool unshare_pid,
         case SETUP_BIND_MOUNT:
           if (source_mode == S_IFDIR)
             {
-              if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+              if (ensure_dir (dest, 0755) != 0)
                 die_with_error ("Can't mkdir %s", op->dest);
             }
           else if (ensure_file (dest, 0666) != 0)
@@ -992,7 +999,7 @@ setup_newroot (bool unshare_pid,
           break;
 
         case SETUP_MOUNT_PROC:
-          if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+          if (ensure_dir (dest, 0755) != 0)
             die_with_error ("Can't mkdir %s", op->dest);
 
           if (unshare_pid)
@@ -1029,7 +1036,7 @@ setup_newroot (bool unshare_pid,
           break;
 
         case SETUP_MOUNT_DEV:
-          if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+          if (ensure_dir (dest, 0755) != 0)
             die_with_error ("Can't mkdir %s", op->dest);
 
           privileged_op (privileged_op_socket,
@@ -1105,7 +1112,7 @@ setup_newroot (bool unshare_pid,
           break;
 
         case SETUP_MOUNT_TMPFS:
-          if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+          if (ensure_dir (dest, 0755) != 0)
             die_with_error ("Can't mkdir %s", op->dest);
 
           privileged_op (privileged_op_socket,
@@ -1114,7 +1121,7 @@ setup_newroot (bool unshare_pid,
           break;
 
         case SETUP_MOUNT_MQUEUE:
-          if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+          if (ensure_dir (dest, 0755) != 0)
             die_with_error ("Can't mkdir %s", op->dest);
 
           privileged_op (privileged_op_socket,
@@ -1123,7 +1130,7 @@ setup_newroot (bool unshare_pid,
           break;
 
         case SETUP_MAKE_DIR:
-          if (mkdir (dest, 0755) != 0 && errno != EEXIST)
+          if (ensure_dir (dest, 0755) != 0)
             die_with_error ("Can't mkdir %s", op->dest);
 
           break;
@@ -1140,6 +1147,7 @@ setup_newroot (bool unshare_pid,
               die_with_error ("Can't write data to file %s", op->dest);
 
             close (op->fd);
+            op->fd = -1;
           }
           break;
 
@@ -1157,6 +1165,7 @@ setup_newroot (bool unshare_pid,
               die_with_error ("Can't write data to file %s", op->dest);
 
             close (op->fd);
+            op->fd = -1;
 
             assert (dest != NULL);
 
@@ -1194,6 +1203,22 @@ setup_newroot (bool unshare_pid,
     }
   privileged_op (privileged_op_socket,
                  PRIV_SEP_OP_DONE, 0, NULL, NULL);
+}
+
+/* Do not leak file descriptors already used by setup_newroot () */
+static void
+close_ops_fd (void)
+{
+  SetupOp *op;
+
+  for (op = ops; op != NULL; op = op->next)
+    {
+      if (op->fd != -1)
+        {
+          (void) close (op->fd);
+          op->fd = -1;
+        }
+    }
 }
 
 /* We need to resolve relative symlinks in the sandbox before we
@@ -1321,7 +1346,6 @@ parse_args_recurse (int          *argcp,
         {
           int the_fd;
           char *endptr;
-          char *data = NULL;
           const char *p, *data_end;
           size_t data_len;
           cleanup_free const char **data_argv = NULL;
@@ -1339,15 +1363,18 @@ parse_args_recurse (int          *argcp,
           if (argv[1][0] == 0 || endptr[0] != 0 || the_fd < 0)
             die ("Invalid fd: %s", argv[1]);
 
-          data = load_file_data (the_fd, &data_len);
-          if (data == NULL)
+          /* opt_args_data is essentially a recursive argv array, which we must
+           * keep allocated until exit time, since its argv entries get used
+           * by the other cases in parse_args_recurse() when we recurse. */
+          opt_args_data = load_file_data (the_fd, &data_len);
+          if (opt_args_data == NULL)
             die_with_error ("Can't read --args data");
           (void) close (the_fd);
 
-          data_end = data + data_len;
+          data_end = opt_args_data + data_len;
           data_argc = 0;
 
-          p = data;
+          p = opt_args_data;
           while (p != NULL && p < data_end)
             {
               data_argc++;
@@ -1362,7 +1389,7 @@ parse_args_recurse (int          *argcp,
           data_argv = xcalloc (sizeof (char *) * (data_argc + 1));
 
           i = 0;
-          p = data;
+          p = opt_args_data;
           while (p != NULL && p < data_end)
             {
               /* Note: load_file_data always adds a nul terminator, so this is safe
@@ -1927,6 +1954,7 @@ main (int    argc,
   cleanup_free char *seccomp_data = NULL;
   size_t seccomp_len;
   struct sock_fprog seccomp_prog;
+  cleanup_free char *args_data = NULL;
 
   /* Handle --version early on before we try to acquire/drop
    * any capabilities so it works in a build environment;
@@ -1963,6 +1991,10 @@ main (int    argc,
     usage (EXIT_FAILURE, stderr);
 
   parse_args (&argc, (const char ***) &argv);
+
+  /* suck the args into a cleanup_free variable to control their lifecycle */
+  args_data = opt_args_data;
+  opt_args_data = NULL;
 
   if ((requested_caps[0] || requested_caps[1]) && is_privileged)
     die ("--cap-add in setuid mode can be used only by root");
@@ -2042,18 +2074,18 @@ main (int    argc,
 
   /* We need to read stuff from proc during the pivot_root dance, etc.
      Lets keep a fd to it open */
-  proc_fd = open ("/proc", O_RDONLY | O_PATH);
+  proc_fd = open ("/proc", O_PATH);
   if (proc_fd == -1)
     die_with_error ("Can't open /proc");
 
   /* We need *some* mountpoint where we can mount the root tmpfs.
      We first try in /run, and if that fails, try in /tmp. */
   base_path = xasprintf ("/run/user/%d/.bubblewrap", real_uid);
-  if (mkdir (base_path, 0755) && errno != EEXIST)
+  if (ensure_dir (base_path, 0755))
     {
       free (base_path);
       base_path = xasprintf ("/tmp/.bubblewrap-%d", real_uid);
-      if (mkdir (base_path, 0755) && errno != EEXIST)
+      if (ensure_dir (base_path, 0755))
         die_with_error ("Creating root mountpoint failed");
     }
 
@@ -2309,6 +2341,8 @@ main (int    argc,
     {
       setup_newroot (opt_unshare_pid, -1);
     }
+
+  close_ops_fd ();
 
   /* The old root better be rprivate or we will send unmount events to the parent namespace */
   if (mount ("oldroot", "oldroot", NULL, MS_REC | MS_PRIVATE, NULL) != 0)
