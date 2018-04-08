@@ -1,5 +1,1 @@
-dist/Add-missing-files-from-upstream-git.patch
-0.2.1/userns-block-fd-Search-PATH-for-python.patch
-0.2.1/userns-block-fd-Search-the-PATH-for-bwrap.patch
-0.2.1/userns-block-fd-Add-support-for-Python-3.patch
 debian/Use-Python-3-for-test-demo-code.patch

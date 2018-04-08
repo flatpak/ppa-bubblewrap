@@ -1,3 +1,11 @@
+bubblewrap (0.2.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    - Drop all patches except
+      d/p/debian/Use-Python-3-for-test-demo-code.patch, merged upstream
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 08 Apr 2018 15:37:41 +0100
+
 bubblewrap (0.2.0-4) unstable; urgency=medium
 
   * Change Vcs-* to point to salsa.debian.org

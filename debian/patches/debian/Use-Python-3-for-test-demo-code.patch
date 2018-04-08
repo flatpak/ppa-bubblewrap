@@ -19,7 +19,7 @@ index 4c68242..2ef2fd6 100755
  import os, select, subprocess, sys, json
  
 diff --git a/tests/test-run.sh b/tests/test-run.sh
-index 8d28e97..f843e00 100755
+index 0dae450..637776e 100755
 --- a/tests/test-run.sh
 +++ b/tests/test-run.sh
 @@ -151,7 +151,7 @@ fi
