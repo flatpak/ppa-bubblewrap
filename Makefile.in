@@ -395,7 +395,8 @@ am__DIST_COMMON = $(srcdir)/Makefile-bwrap.am \
 	$(top_srcdir)/build-aux/missing \
 	$(top_srcdir)/build-aux/tap-driver.sh \
 	$(top_srcdir)/build-aux/test-driver COPYING build-aux/compile \
-	build-aux/depcomp build-aux/install-sh build-aux/missing
+	build-aux/config.guess build-aux/config.sub build-aux/depcomp \
+	build-aux/install-sh build-aux/ltmain.sh build-aux/missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -514,7 +515,11 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CFLAGS = $(WARN_CFLAGS)
 CLEANFILES = $(am__append_1)
-EXTRA_DIST = bwrap.xml $(TESTS) tests/libtest-core.sh
+EXTRA_DIST = .dir-locals.el .editorconfig README.md autogen.sh \
+	demos/bubblewrap-shell.sh demos/flatpak-run.sh \
+	demos/flatpak.bpf demos/userns-block-fd.py \
+	packaging/bubblewrap.spec uncrustify.cfg uncrustify.sh $(NULL) \
+	bwrap.xml $(TESTS) tests/libtest-core.sh
 GITIGNOREFILES = build-aux/ gtk-doc.make config.h.in aclocal.m4
 bwrap_srcpath := $(srcdir)
 bwrap_SOURCES = \
