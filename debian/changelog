@@ -1,8 +1,10 @@
-bubblewrap (0.2.1+5+g5991dab-1) UNRELEASED; urgency=medium
+bubblewrap (0.2.1+5+g5991dab-1) experimental; urgency=medium
 
+  * d/watch: Strip +N+gHHHHHHH snapshot markers from version
+  * d/gbp.conf: Use debian/experimental branch
   * New upstream git snapshot
 
- -- Simon McVittie <smcv@debian.org>  Thu, 07 Jun 2018 12:59:07 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 07 Jun 2018 13:04:18 +0100
 
 bubblewrap (0.2.1-1) unstable; urgency=medium
 
