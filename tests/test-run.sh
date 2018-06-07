@@ -24,6 +24,9 @@ trap cleanup EXIT
 cd ${tempdir}
 
 : "${BWRAP:=bwrap}"
+if test -u "$(type -p ${BWRAP})"; then
+    bwrap_is_suid=true
+fi
 
 FUSE_DIR=
 for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | awk '{print $2}'); do
@@ -46,6 +49,17 @@ if ${is_uidzero} || test -x `dirname $UNREADABLE`; then
     UNREADABLE=
 fi
 
+# https://github.com/projectatomic/bubblewrap/issues/217
+BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
+          --ro-bind /etc /etc
+          --dir /var/tmp
+          --symlink usr/lib /lib
+          --symlink usr/lib64 /lib64
+          --symlink usr/bin /bin
+          --symlink usr/sbin /sbin
+          --proc /proc
+          --dev /dev"
+
 # Default arg, bind whole host fs to /, tmpfs on /tmp
 RUN="${BWRAP} --bind / / --tmpfs /tmp"
 
@@ -53,7 +67,7 @@ if ! $RUN true; then
     skip Seems like bwrap is not working at all. Maybe setuid is not working
 fi
 
-echo "1..33"
+echo "1..38"
 
 # Test help
 ${BWRAP} --help > help.txt
@@ -78,7 +92,7 @@ for ALT in "" "--unshare-user-try"  "--unshare-pid" "--unshare-user-try --unshar
     echo -n "expect EPERM: " >&2
 
     # Test caps when bwrap is not setuid
-    if ! test -u ${BWRAP}; then
+    if test -n "${bwrap_is_suid:-}"; then
         CAP="--cap-add ALL"
     else
         CAP=""
@@ -112,6 +126,21 @@ echo "ok - all expected devices were created"
 $RUN --unshare-pid --as-pid-1 --bind / / bash -c 'echo $$' > as_pid_1.txt
 assert_file_has_content as_pid_1.txt "1"
 echo "ok - can run as pid 1"
+
+# These tests require --unshare-user
+if test -n "${bwrap_is_suid:-}"; then
+    echo "ok - # SKIP no --cap-add support"
+    echo "ok - # SKIP no --cap-add support"
+else
+    BWRAP_RECURSE="$BWRAP --unshare-all --uid 0 --gid 0 --cap-add ALL --bind / / --bind /proc /proc"
+    $BWRAP_RECURSE -- $BWRAP --unshare-all --bind / / --bind /proc /proc echo hello > recursive_proc.txt
+    assert_file_has_content recursive_proc.txt "hello"
+    echo "ok - can mount /proc recursively"
+
+    $BWRAP_RECURSE -- $BWRAP --unshare-all  ${BWRAP_RO_HOST_ARGS} findmnt > recursive-newroot.txt
+    assert_file_has_content recursive-newroot.txt "/usr"
+    echo "ok - can pivot to new rootfs recursively"
+fi
 
 # Test error prefixing
 if $RUN --unshare-pid  --bind /source-enoent /dest true 2>err.txt; then
@@ -198,5 +227,20 @@ done
 printf '%s--dir\0/tmp/hello/world\0' '' > test.args
 $RUN --args 3 test -d /tmp/hello/world 3<test.args
 echo "ok - we can parse arguments from a fd"
+
+mkdir bin
+echo "#!/bin/sh" > bin/--inadvisable-executable-name--
+echo "echo hello" >> bin/--inadvisable-executable-name--
+chmod +x bin/--inadvisable-executable-name--
+PATH="${srcd}:$PATH" $RUN -- sh -c "echo hello" > stdout
+assert_file_has_content stdout hello
+echo "ok - we can run with --"
+PATH="$(pwd)/bin:$PATH" $RUN -- --inadvisable-executable-name-- > stdout
+assert_file_has_content stdout hello
+echo "ok - we can run an inadvisable executable name with --"
+if $RUN -- --dev-bind /dev /dev sh -c 'echo should not have run'; then
+    assert_not_reached "'--dev-bind' should have been interpreted as a (silly) executable name"
+fi
+echo "ok - options like --dev-bind are defanged by --"
 
 echo "ok - End of test"
