@@ -1,3 +1,9 @@
+bubblewrap (0.3.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 12 Jul 2018 09:59:13 +0100
+
 bubblewrap (0.2.1+5+g5991dab-1) experimental; urgency=medium
 
   * d/watch: Strip +N+gHHHHHHH snapshot markers from version
