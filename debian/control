@@ -18,7 +18,7 @@ Build-Depends:
  xsltproc,
 Standards-Version: 4.1.4
 Homepage: https://github.com/projectatomic/bubblewrap
-Vcs-Git: https://salsa.debian.org/debian/bubblewrap.git -b debian/experimental
+Vcs-Git: https://salsa.debian.org/debian/bubblewrap.git
 Vcs-Browser: https://salsa.debian.org/debian/bubblewrap
 Rules-Requires-Root: no
 
