@@ -1,8 +1,11 @@
-bubblewrap (0.3.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.3.0-1) unstable; urgency=medium
 
   * New upstream release
+  * Upload to unstable
+    - d/gbp.conf: Switch back to debian/master
+  * Standards-Version: 4.1.5 (no changes required)
 
- -- Simon McVittie <smcv@debian.org>  Thu, 12 Jul 2018 09:59:13 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 12 Jul 2018 10:03:38 +0100
 
 bubblewrap (0.2.1+5+g5991dab-1) experimental; urgency=medium
 
