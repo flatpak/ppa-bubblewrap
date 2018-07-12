@@ -1,9 +1,3 @@
-bubblewrap (0.2.1+5+g5991dab-2) UNRELEASED; urgency=medium
-
-  * d/control: Set Vcs-Git for experimental branch
-
- -- Simon McVittie <smcv@debian.org>  Fri, 08 Jun 2018 09:33:06 +0100
-
 bubblewrap (0.2.1+5+g5991dab-1) experimental; urgency=medium
 
   * d/watch: Strip +N+gHHHHHHH snapshot markers from version
