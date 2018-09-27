@@ -1,4 +1,4 @@
-bubblewrap (0.3.1-1) UNRELEASED; urgency=medium
+bubblewrap (0.3.1-1) unstable; urgency=medium
 
   [ Simon McVittie ]
   * Standards-Version: 4.2.1 (no changes required)
@@ -9,7 +9,7 @@ bubblewrap (0.3.1-1) UNRELEASED; urgency=medium
     Ubuntu's kernel enables unprivileged user namespaces, so we don't
     need to install bwrap setuid there.
 
- -- Simon McVittie <smcv@debian.org>  Thu, 27 Sep 2018 20:30:29 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 27 Sep 2018 20:30:53 +0100
 
 bubblewrap (0.3.0-1) unstable; urgency=medium
 
