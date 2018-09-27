@@ -13,7 +13,13 @@ PKGDIR=$(CURDIR)/debian/bubblewrap
 
 override_dh_fixperms:
 	chmod a+x $(PKGDIR)/usr/share/bash-completion/completions/bwrap
+# Ubuntu enables unprivileged user namespaces; no need for bwrap to be suid
+# there.
+ifneq (yes,$(shell dpkg-vendor --derives-from Ubuntu && echo yes))
 	chmod 04755 $(PKGDIR)/usr/bin/bwrap
 	dh_fixperms -Xbin/bwrap
+else
+	dh_fixperms
+endif
 
 .PHONY: override_dh_fixperms
