@@ -13,7 +13,9 @@ sub run_ok {
 }
 
 my $out;
-run_ok([qw(bwrap --ro-bind / / /usr/bin/id)], '<', \undef, '>', \$out);
-is($out, `id`);
+run_ok([qw(bwrap --ro-bind / / /usr/bin/id -u)], '<', \undef, '>', \$out);
+is($out, `id -u`);
+run_ok([qw(bwrap --ro-bind / / /usr/bin/id -g)], '<', \undef, '>', \$out);
+is($out, `id -g`);
 
 done_testing;
