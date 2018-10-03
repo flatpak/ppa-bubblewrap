@@ -1,2 +1,3 @@
 tests-Handle-systems-without-merged-usr.patch
+man-page-Describe-chdir-not-nonexistent-cwd.patch
 debian/Use-Python-3-for-test-demo-code.patch
