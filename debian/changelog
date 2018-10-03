@@ -4,6 +4,8 @@ bubblewrap (0.3.1-2) UNRELEASED; urgency=medium
   * d/tests/basic: Don't assume `id` will be the same inside the sandbox,
     making this test pass on (Ubuntu) systems where bubblewrap is not
     setuid (Closes: #910006)
+  * d/tests/upstream-usrmerge: Add a test to ensure that bubblewrap
+    works on a /usr-merged system
 
   [ Simon McVittie ]
   * d/p/tests-Handle-systems-without-merged-usr.patch:
@@ -15,7 +17,7 @@ bubblewrap (0.3.1-2) UNRELEASED; urgency=medium
     Add patch from upstream git to fix lock handling in tests on 32-bit
     platforms with 64-bit off_t. Thanks to Timothy E Baldwin.
 
- -- Simon McVittie <smcv@debian.org>  Wed, 03 Oct 2018 09:29:36 +0100
+ -- Simon McVittie <smcv@debian.org>  Wed, 03 Oct 2018 15:22:59 +0100
 
 bubblewrap (0.3.1-1) unstable; urgency=medium
 
