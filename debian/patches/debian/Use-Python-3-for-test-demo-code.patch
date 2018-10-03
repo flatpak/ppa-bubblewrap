@@ -19,10 +19,10 @@ index 4c68242..2ef2fd6 100755
  import os, select, subprocess, sys, json
  
 diff --git a/tests/test-run.sh b/tests/test-run.sh
-index c010a34..8dded0a 100755
+index b883b82..5efaed0 100755
 --- a/tests/test-run.sh
 +++ b/tests/test-run.sh
-@@ -180,7 +180,7 @@ fi
+@@ -193,7 +193,7 @@ fi
  # Test --die-with-parent
  
  cat >lockf-n.py <<EOF
