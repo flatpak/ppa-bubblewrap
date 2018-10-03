@@ -1,0 +1,57 @@
+From: Iain Lane <iainl@gnome.org>
+Date: Fri, 28 Sep 2018 11:39:47 +0100
+Subject: tests: Handle systems without merged-/usr
+
+For the non-suid case, we were assuming that the host system would have
+merged /usr (e.g. /bin -> /usr/bin). This isn't yet the case for all
+distros, so let's handle both.
+
+Bug: https://github.com/projectatomic/bubblewrap/issues/290
+Reviewed-by: smcv
+Applied-upstream: 0.3.2, commit:0148dd34bb7eff4935d5218d04d78b027588cc4c
+---
+ tests/test-run.sh | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/tests/test-run.sh b/tests/test-run.sh
+index c010a34..e68036d 100755
+--- a/tests/test-run.sh
++++ b/tests/test-run.sh
+@@ -50,15 +50,28 @@ if ${is_uidzero} || test -x `dirname $UNREADABLE`; then
+ fi
+ 
+ # https://github.com/projectatomic/bubblewrap/issues/217
+-BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
+-          --ro-bind /etc /etc
+-          --dir /var/tmp
+-          --symlink usr/lib /lib
+-          --symlink usr/lib64 /lib64
+-          --symlink usr/bin /bin
+-          --symlink usr/sbin /sbin
+-          --proc /proc
+-          --dev /dev"
++# are we on a merged-/usr system?
++if [ /lib -ef /usr/lib ]; then
++    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
++              --ro-bind /etc /etc
++              --dir /var/tmp
++              --symlink usr/lib /lib
++              --symlink usr/lib64 /lib64
++              --symlink usr/bin /bin
++              --symlink usr/sbin /sbin
++              --proc /proc
++              --dev /dev"
++else
++    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
++              --ro-bind /etc /etc
++              --ro-bind /bin /bin
++              --ro-bind /lib /lib
++              --ro-bind-try /lib64 /lib64
++              --ro-bind /sbin /sbin
++              --dir /var/tmp
++              --proc /proc
++              --dev /dev"
++fi
+ 
+ # Default arg, bind whole host fs to /, tmpfs on /tmp
+ RUN="${BWRAP} --bind / / --tmpfs /tmp"
