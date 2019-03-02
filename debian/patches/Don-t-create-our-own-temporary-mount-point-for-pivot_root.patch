@@ -1,0 +1,59 @@
+From: Simon McVittie <smcv@debian.org>
+Date: Sat, 2 Mar 2019 12:09:03 +0000
+Subject: Don't create our own temporary mount point for pivot_root
+
+An attacker could pre-create /tmp/.bubblewrap-$UID and make it a
+non-directory, non-symlink (in which case mounting our tmpfs would fail,
+causing denial of service), or make it a symlink under their control
+(potentially allowing bad things if the protected_symlinks sysctl is
+not enabled).
+
+Instead, temporarily mount the tmpfs on a directory that we are sure
+exists and is not attacker-controlled. We already rely on /proc to have
+those properties, so it seems as good a place as any. This doesn't appear
+to have any impact on our ability to use /proc as either the source or
+the destination of a bind-mount.
+
+Fixes: #304
+Bug-Debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=923557
+Signed-off-by: Simon McVittie <smcv@debian.org>
+---
+ bubblewrap.c | 18 ++++++++----------
+ 1 file changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/bubblewrap.c b/bubblewrap.c
+index b319f1c..b213c24 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -1977,7 +1977,7 @@ main (int    argc,
+       char **argv)
+ {
+   mode_t old_umask;
+-  cleanup_free char *base_path = NULL;
++  const char *base_path = NULL;
+   int clone_flags;
+   char *old_cwd = NULL;
+   pid_t pid;
+@@ -2117,15 +2117,13 @@ main (int    argc,
+     die_with_error ("Can't open /proc");
+ 
+   /* We need *some* mountpoint where we can mount the root tmpfs.
+-     We first try in /run, and if that fails, try in /tmp. */
+-  base_path = xasprintf ("/run/user/%d/.bubblewrap", real_uid);
+-  if (ensure_dir (base_path, 0755))
+-    {
+-      free (base_path);
+-      base_path = xasprintf ("/tmp/.bubblewrap-%d", real_uid);
+-      if (ensure_dir (base_path, 0755))
+-        die_with_error ("Creating root mountpoint failed");
+-    }
++   * Because we use pivot_root, it won't appear to be mounted from
++   * the perspective of the sandboxed process, so we can use anywhere
++   * that is sure to exist, that is sure to not be a symlink controlled
++   * by someone malicious, and that we won't immediately need to
++   * access ourselves. We already (have to) trust /proc, so it seems
++   * as good a path as any. */
++  base_path = "/proc";
+ 
+   __debug__ (("creating new namespace\n"));
+ 

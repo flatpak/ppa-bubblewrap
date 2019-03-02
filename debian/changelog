@@ -1,5 +1,8 @@
 bubblewrap (0.3.1-3) UNRELEASED; urgency=medium
 
+  * d/p/Don-t-create-our-own-temporary-mount-point-for-pivot_root.patch:
+    Avoid denial of service and potential symlink attacks on systems not
+    using systemd-logind (Closes: #923557)
   * d/upstream/metadata: Add DEP-12 metadata
 
  -- Simon McVittie <smcv@debian.org>  Fri, 18 Jan 2019 08:48:05 +0000
