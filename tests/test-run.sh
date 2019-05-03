@@ -50,15 +50,28 @@ if ${is_uidzero} || test -x `dirname $UNREADABLE`; then
 fi
 
 # https://github.com/projectatomic/bubblewrap/issues/217
-BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
-          --ro-bind /etc /etc
-          --dir /var/tmp
-          --symlink usr/lib /lib
-          --symlink usr/lib64 /lib64
-          --symlink usr/bin /bin
-          --symlink usr/sbin /sbin
-          --proc /proc
-          --dev /dev"
+# are we on a merged-/usr system?
+if [ /lib -ef /usr/lib ]; then
+    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
+              --ro-bind /etc /etc
+              --dir /var/tmp
+              --symlink usr/lib /lib
+              --symlink usr/lib64 /lib64
+              --symlink usr/bin /bin
+              --symlink usr/sbin /sbin
+              --proc /proc
+              --dev /dev"
+else
+    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
+              --ro-bind /etc /etc
+              --ro-bind /bin /bin
+              --ro-bind /lib /lib
+              --ro-bind-try /lib64 /lib64
+              --ro-bind /sbin /sbin
+              --dir /var/tmp
+              --proc /proc
+              --dev /dev"
+fi
 
 # Default arg, bind whole host fs to /, tmpfs on /tmp
 RUN="${BWRAP} --bind / / --tmpfs /tmp"
@@ -67,7 +80,7 @@ if ! $RUN true; then
     skip Seems like bwrap is not working at all. Maybe setuid is not working
 fi
 
-echo "1..38"
+echo "1..46"
 
 # Test help
 ${BWRAP} --help > help.txt
@@ -126,6 +139,28 @@ echo "ok - all expected devices were created"
 $RUN --unshare-pid --as-pid-1 --bind / / bash -c 'echo $$' > as_pid_1.txt
 assert_file_has_content as_pid_1.txt "1"
 echo "ok - can run as pid 1"
+
+# Test --info-fd and --json-status-fd
+if $RUN --unshare-all --info-fd 42 --json-status-fd 43 -- bash -c 'exit 42' 42>info.json 43>json-status.json 2>err.txt; then
+    fatal "should have been exit 42"
+fi
+assert_file_has_content info.json '"child-pid": [0-9]'
+assert_file_has_content json-status.json '"child-pid": [0-9]'
+assert_file_has_content_literal json-status.json '"exit-code": 42'
+echo "ok info and json-status fd"
+
+if ! which strace 2>/dev/null || ! strace -h | grep -v -e default | grep -e fault; then
+    echo "ok - # SKIP no strace fault injection"
+else
+    ! strace -o /dev/null -f -e trace=prctl -e fault=prctl:when=39 $RUN --die-with-parent --json-status-fd 42 true 42>json-status.json
+    assert_not_file_has_content json-status.json '"exit-code": [0-9]'
+    echo "ok pre-exec failure doesn't include exit-code in json-status"
+fi
+
+notanexecutable=/
+$RUN --json-status-fd 42 $notanexecutable 42>json-status.json || true
+assert_not_file_has_content json-status.json '"exit-code": [0-9]'
+echo "ok exec failure doesn't include exit-code in json-status"
 
 # These tests require --unshare-user
 if test -n "${bwrap_is_suid:-}"; then
@@ -187,7 +222,7 @@ if sys.argv[2] == 'wait':
   locktype = fcntl.F_SETLKW
 else:
   locktype = fcntl.F_SETLK
-lockdata = struct.pack("hhllhh", fcntl.F_WRLCK, 0, 0, 0, 0, 0)
+lockdata = struct.pack("hhqqhh", fcntl.F_WRLCK, 0, 0, 0, 0, 0)
 fd=open(sys.argv[1], 'a')
 try:
   fcntl.fcntl(fd.fileno(), locktype, lockdata)
@@ -242,5 +277,56 @@ if $RUN -- --dev-bind /dev /dev sh -c 'echo should not have run'; then
     assert_not_reached "'--dev-bind' should have been interpreted as a (silly) executable name"
 fi
 echo "ok - options like --dev-bind are defanged by --"
+
+if command -v mktemp > /dev/null; then
+    tempfile="$(mktemp /tmp/bwrap-test-XXXXXXXX)"
+    echo "hello" > "$tempfile"
+    $BWRAP --bind / / cat "$tempfile" > stdout
+    assert_file_has_content stdout hello
+    echo "ok - bind-mount of / exposes real /tmp"
+    $BWRAP --bind / / --bind /tmp /tmp cat "$tempfile" > stdout
+    assert_file_has_content stdout hello
+    echo "ok - bind-mount of /tmp exposes real /tmp"
+    if [ -d /mnt ]; then
+        $BWRAP --bind / / --bind /tmp /mnt cat "/mnt/${tempfile#/tmp/}" > stdout
+        assert_file_has_content stdout hello
+        echo "ok - bind-mount of /tmp onto /mnt exposes real /tmp"
+    else
+        echo "ok - # SKIP /mnt does not exist"
+    fi
+else
+    echo "ok - # SKIP mktemp not found"
+    echo "ok - # SKIP mktemp not found"
+    echo "ok - # SKIP mktemp not found"
+fi
+
+if $RUN test -d /tmp/oldroot; then
+    assert_not_reached "/tmp/oldroot should not be visible"
+fi
+if $RUN test -d /tmp/newroot; then
+    assert_not_reached "/tmp/newroot should not be visible"
+fi
+
+echo "hello" > input.$$
+$BWRAP --bind / / --bind "$(pwd)" /tmp cat /tmp/input.$$ > stdout
+assert_file_has_content stdout hello
+if $BWRAP --bind / / --bind "$(pwd)" /tmp test -d /tmp/oldroot; then
+    assert_not_reached "/tmp/oldroot should not be visible"
+fi
+if $BWRAP --bind / / --bind "$(pwd)" /tmp test -d /tmp/newroot; then
+    assert_not_reached "/tmp/newroot should not be visible"
+fi
+echo "ok - we can mount another directory onto /tmp"
+
+echo "hello" > input.$$
+$RUN --bind "$(pwd)" /tmp/here cat /tmp/here/input.$$ > stdout
+assert_file_has_content stdout hello
+if $RUN --bind "$(pwd)" /tmp/here test -d /tmp/oldroot; then
+    assert_not_reached "/tmp/oldroot should not be visible"
+fi
+if $RUN --bind "$(pwd)" /tmp/here test -d /tmp/newroot; then
+    assert_not_reached "/tmp/newroot should not be visible"
+fi
+echo "ok - we can mount another directory inside /tmp"
 
 echo "ok - End of test"
