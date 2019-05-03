@@ -1,6 +1,1 @@
-tests-Handle-systems-without-merged-usr.patch
-man-page-Describe-chdir-not-nonexistent-cwd.patch
-Make-lockdata-long-enough-on-32-bit-with-64-bit-file-poin.patch
-Don-t-create-our-own-temporary-mount-point-for-pivot_root.patch
-tests-Ensure-that-tmpfs-with-oldroot-newroot-doesn-t-appe.patch
 debian/Use-Python-3-for-test-demo-code.patch
