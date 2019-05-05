@@ -1,10 +1,10 @@
-bubblewrap (0.3.3-1) UNRELEASED; urgency=medium
+bubblewrap (0.3.3-1) experimental; urgency=medium
 
   * New upstream release
     - Drop all patches except
       d/p/debian/Use-Python-3-for-test-demo-code.patch, merged upstream
 
- -- Simon McVittie <smcv@debian.org>  Fri, 03 May 2019 18:22:00 +0100
+ -- Simon McVittie <smcv@debian.org>  Sun, 05 May 2019 10:36:48 +0100
 
 bubblewrap (0.3.1-4) unstable; urgency=medium
 
