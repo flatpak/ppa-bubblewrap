@@ -23,3 +23,13 @@ else
 endif
 
 .PHONY: override_dh_fixperms
+
+override_dh_auto_test:
+ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	# Remove LD_PRELOAD so we don't run with faketime. It uses
+	# sem_open(), but bubblewrap runs in an environment where that
+	# can't work.
+	env -u LD_PRELOAD dh_auto_test
+endif
+
+.PHONY: override_dh_auto_test

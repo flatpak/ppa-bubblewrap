@@ -1,6 +1,11 @@
 bubblewrap (0.3.3-2) UNRELEASED; urgency=medium
 
   * d/salsa-ci.yml: Request standard CI on salsa.debian.org
+  * d/rules: Disable any active LD_PRELOAD hacks while running tests.
+    These will typically assume a fully-featured OS (for example faketime
+    assumes sem_open() will work), but bubblewrap is a low-level tool
+    that temporarily operates in a container that is only partially
+    functional (for example /dev/shm isn't always mounted).
 
  -- Simon McVittie <smcv@debian.org>  Sun, 23 Jun 2019 19:21:29 +0100
 
