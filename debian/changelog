@@ -6,6 +6,7 @@ bubblewrap (0.3.3-2) UNRELEASED; urgency=medium
     assumes sem_open() will work), but bubblewrap is a low-level tool
     that temporarily operates in a container that is only partially
     functional (for example /dev/shm isn't always mounted).
+  * Standards-Version: 4.4.0 (no changes required)
 
  -- Simon McVittie <smcv@debian.org>  Sun, 23 Jun 2019 19:21:29 +0100
 
