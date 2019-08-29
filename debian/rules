@@ -33,3 +33,7 @@ ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 endif
 
 .PHONY: override_dh_auto_test
+
+override_dh_dwz:
+
+.PHONY: override_dh_dwz
