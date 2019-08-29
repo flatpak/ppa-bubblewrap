@@ -1,3 +1,9 @@
+bubblewrap (0.3.3-3) UNRELEASED; urgency=medium
+
+  * Use debhelper-compat 12
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 29 Aug 2019 08:56:30 +0100
+
 bubblewrap (0.3.3-2) unstable; urgency=medium
 
   * Release to unstable
