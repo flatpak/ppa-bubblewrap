@@ -1,6 +1,7 @@
 bubblewrap (0.3.3-3) UNRELEASED; urgency=medium
 
   * Use debhelper-compat 12
+  * Standards-Version: 4.4.1 (no changes required)
 
  -- Simon McVittie <smcv@debian.org>  Thu, 29 Aug 2019 08:56:30 +0100
 
