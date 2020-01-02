@@ -1,3 +1,10 @@
+bubblewrap (0.4.0-2) UNRELEASED; urgency=medium
+
+  * Update various URLs from https://github.com/projectatomic/bubblewrap
+    to https://github.com/containers/bubblewrap
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 02 Jan 2020 18:55:48 +0000
+
 bubblewrap (0.4.0-1) unstable; urgency=medium
 
   * New upstream release

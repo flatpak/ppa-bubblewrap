@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: bubblewrap
-Source: https://github.com/projectatomic/bubblewrap/
+Source: https://github.com/containers/bubblewrap/
 
 Files: *
 Copyright: 2016 Alexander Larsson
