@@ -1,5 +1,4 @@
 ---
-Name: Bubblewrap
 Repository: https://github.com/containers/bubblewrap.git
 Repository-Browse: https://github.com/containers/bubblewrap
 Bug-Database: https://github.com/containers/bubblewrap/issues
