@@ -1,4 +1,4 @@
-bubblewrap (0.4.1-1) UNRELEASED; urgency=medium
+bubblewrap (0.4.1-1) unstable; urgency=high
 
   * New upstream release
     - Fixes a root privilege escalation vulnerability introduced in 0.4.0,
@@ -18,8 +18,10 @@ bubblewrap (0.4.1-1) UNRELEASED; urgency=medium
   * Remove obsolete field Name from debian/upstream/metadata (already
     present in machine-readable debian/copyright).
   * Standards-Version: 4.5.0 (no changes required)
+  * d/tests/control: Qualify CLI tools with :native.
+    Thanks to Steve Langasek (Closes: #948617)
 
- -- Simon McVittie <smcv@debian.org>  Thu, 02 Jan 2020 18:55:48 +0000
+ -- Simon McVittie <smcv@debian.org>  Mon, 30 Mar 2020 14:33:54 +0100
 
 bubblewrap (0.4.0-1) unstable; urgency=medium
 
