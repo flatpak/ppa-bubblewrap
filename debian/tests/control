@@ -7,21 +7,21 @@ Tests:
 Restrictions: allow-stderr, isolation-machine
 Depends:
  bubblewrap,
- iproute2,
- libcap2-bin,
- libipc-run-perl,
- perl,
- python3,
+ iproute2:native,
+ libcap2-bin:native,
+ libipc-run-perl:native,
+ perl:native,
+ python3:native,
 
 Tests: upstream-usrmerge
 Restrictions: allow-stderr, isolation-machine, breaks-testbed
 Depends:
  bubblewrap,
- iproute2,
- libcap2-bin,
- libipc-run-perl,
- perl,
- python3,
+ iproute2:native,
+ libcap2-bin:native,
+ libipc-run-perl:native,
+ perl:native,
+ python3:native,
  usrmerge
 
 Tests:
@@ -29,8 +29,8 @@ Tests:
 Restrictions: allow-stderr, isolation-machine, needs-root
 Depends:
  bubblewrap,
- iproute2,
- libcap2-bin,
- libipc-run-perl,
- perl,
- python3,
+ iproute2:native,
+ libcap2-bin:native,
+ libipc-run-perl:native,
+ perl:native,
+ python3:native,
