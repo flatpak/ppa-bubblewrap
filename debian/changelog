@@ -1,4 +1,4 @@
-bubblewrap (0.4.1-2) UNRELEASED; urgency=medium
+bubblewrap (0.4.1-2) unstable; urgency=medium
 
   * d/gbp.conf: Rename development branch to debian/latest
   * Standards-Version: 4.5.1 (no changes required)
@@ -9,8 +9,12 @@ bubblewrap (0.4.1-2) UNRELEASED; urgency=medium
       filesystem such as xfs is remounted into the sandbox
     - Don't fail if /proc is read-only, as it can be inside Docker
   * Forward python3 patch upstream
+  * d/control: Canonicalize case of Multi-Arch
+  * Add a patch to fix typos in the man page
+  * Add a README.Debian describing ways in which bubblewrap can be used
+  * Add patch to include Debian-specific links in EPERM error message
 
- -- Simon McVittie <smcv@debian.org>  Fri, 01 Jan 2021 14:19:00 +0000
+ -- Simon McVittie <smcv@debian.org>  Fri, 01 Jan 2021 15:31:11 +0000
 
 bubblewrap (0.4.1-1) unstable; urgency=high
 
