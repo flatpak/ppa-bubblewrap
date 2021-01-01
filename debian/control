@@ -24,7 +24,7 @@ Rules-Requires-Root: no
 
 Package: bubblewrap
 Architecture: linux-any
-Multi-arch: foreign
+Multi-Arch: foreign
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
