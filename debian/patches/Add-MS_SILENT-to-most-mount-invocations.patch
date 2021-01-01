@@ -1,0 +1,88 @@
+From: Colin Walters <walters@verbum.org>
+Date: Mon, 18 May 2020 21:20:43 +0000
+Subject: Add MS_SILENT to most mount() invocations
+
+There's an effort to migrate Linux filesystems to handle the y2038
+problem, which is great.  However, recently a kernel change landed
+that emits a warning when mounting a filesystem that doesn't
+handle it, and this notably shows up even when *remounting* e.g.
+for a read-only bind mount:
+
+Using e.g. `rpm-ostree install cowsay` there's a spam of:
+
+```
+[  189.529594] xfs filesystem being remounted at /sysroot supports timestamps until 2038 (0x7fffffff)
+```
+
+Now particularly when creating a our bind mounts, let's
+ask the kernel to be quiet about it.  This is not a major event
+worthy of a kernel log.
+
+Origin: upstream, 0.4.2, commit:765dd0e94f53eb8fe875e59b7b3548c109298c0e
+---
+ bind-mount.c | 6 +++---
+ bubblewrap.c | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/bind-mount.c b/bind-mount.c
+index 045fa0e..4bd187d 100644
+--- a/bind-mount.c
++++ b/bind-mount.c
+@@ -389,7 +389,7 @@ bind_mount (int           proc_fd,
+ 
+   if (src)
+     {
+-      if (mount (src, dest, NULL, MS_BIND | (recursive ? MS_REC : 0), NULL) != 0)
++      if (mount (src, dest, NULL, MS_SILENT | MS_BIND | (recursive ? MS_REC : 0), NULL) != 0)
+         return 1;
+     }
+ 
+@@ -411,7 +411,7 @@ bind_mount (int           proc_fd,
+   new_flags = current_flags | (devices ? 0 : MS_NODEV) | MS_NOSUID | (readonly ? MS_RDONLY : 0);
+   if (new_flags != current_flags &&
+       mount ("none", resolved_dest,
+-             NULL, MS_BIND | MS_REMOUNT | new_flags, NULL) != 0)
++             NULL, MS_SILENT | MS_BIND | MS_REMOUNT | new_flags, NULL) != 0)
+     return 3;
+ 
+   /* We need to work around the fact that a bind mount does not apply the flags, so we need to manually
+@@ -426,7 +426,7 @@ bind_mount (int           proc_fd,
+           new_flags = current_flags | (devices ? 0 : MS_NODEV) | MS_NOSUID | (readonly ? MS_RDONLY : 0);
+           if (new_flags != current_flags &&
+               mount ("none", mount_tab[i].mountpoint,
+-                     NULL, MS_BIND | MS_REMOUNT | new_flags, NULL) != 0)
++                     NULL, MS_SILENT | MS_BIND | MS_REMOUNT | new_flags, NULL) != 0)
+             {
+               /* If we can't read the mountpoint we can't remount it, but that should
+                  be safe to ignore because its not something the user can access. */
+diff --git a/bubblewrap.c b/bubblewrap.c
+index 746f978..e1a4629 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -2632,7 +2632,7 @@ main (int    argc,
+   /* Mark everything as slave, so that we still
+    * receive mounts from the real root, but don't
+    * propagate mounts to the real root. */
+-  if (mount (NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) < 0)
++  if (mount (NULL, "/", NULL, MS_SILENT | MS_SLAVE | MS_REC, NULL) < 0)
+     die_with_error ("Failed to make / slave");
+ 
+   /* Create a tmpfs which we will use as / in the namespace */
+@@ -2655,7 +2655,7 @@ main (int    argc,
+   if (mkdir ("newroot", 0755))
+     die_with_error ("Creating newroot failed");
+ 
+-  if (mount ("newroot", "newroot", NULL, MS_MGC_VAL | MS_BIND | MS_REC, NULL) < 0)
++  if (mount ("newroot", "newroot", NULL, MS_SILENT | MS_MGC_VAL | MS_BIND | MS_REC, NULL) < 0)
+     die_with_error ("setting up newroot bind");
+ 
+   if (mkdir ("oldroot", 0755))
+@@ -2720,7 +2720,7 @@ main (int    argc,
+   close_ops_fd ();
+ 
+   /* The old root better be rprivate or we will send unmount events to the parent namespace */
+-  if (mount ("oldroot", "oldroot", NULL, MS_REC | MS_PRIVATE, NULL) != 0)
++  if (mount ("oldroot", "oldroot", NULL, MS_SILENT | MS_REC | MS_PRIVATE, NULL) != 0)
+     die_with_error ("Failed to make old root rprivate");
+ 
+   if (umount2 ("oldroot", MNT_DETACH))
