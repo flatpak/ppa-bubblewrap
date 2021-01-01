@@ -1,8 +1,12 @@
-From: Simon McVittie <smcv@debian.org>
+From: Simon McVittie <smcv@collabora.com>
 Date: Wed, 17 Jan 2018 14:10:40 +0000
 Subject: Use Python 3 for test/demo code
 
-Forwarded: not-needed
+Python 2 EOL was a year ago, and distributions like Debian no longer
+have a /usr/bin/python executable.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+Forwarded: https://github.com/containers/bubblewrap/pull/399
 ---
  demos/userns-block-fd.py | 2 +-
  tests/test-run.sh        | 2 +-
