@@ -1,3 +1,19 @@
+bubblewrap (0.4.1-3) unstable; urgency=medium
+
+  * Stop making /usr/bin/bwrap setuid root.
+    With Debian kernels >= 5.10, this is no longer necessary: unprivileged
+    users can now create user namespaces, the same as in upstream kernels
+    and Ubuntu.
+    For smooth upgrades, install a sysctl configuration fragment that will
+    configure older kernels to behave similarly if the recommended procps
+    package is installed, or if booting with systemd. (Closes: #977841)
+    - This change also makes more Flatpak features available; in
+      particular, it is necessary for the Chromium browser.
+      (Closes: #977758)
+  * Include setuid status, etc. in bug reports
+
+ -- Simon McVittie <smcv@debian.org>  Sun, 03 Jan 2021 14:13:01 +0000
+
 bubblewrap (0.4.1-2) unstable; urgency=medium
 
   * d/gbp.conf: Rename development branch to debian/latest
