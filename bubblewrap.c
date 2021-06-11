@@ -234,7 +234,7 @@ usage (int ecode, FILE *out)
            "    --unshare-cgroup             Create new cgroup namespace\n"
            "    --unshare-cgroup-try         Create new cgroup namespace if possible else continue by skipping it\n"
            "    --userns FD                  Use this user namespace (cannot combine with --unshare-user)\n"
-           "    --userns2 FD                 After setup switch to this user namspace, only useful with --userns\n"
+           "    --userns2 FD                 After setup switch to this user namespace, only useful with --userns\n"
            "    --pidns FD                   Use this user namespace (as parent namespace if using --unshare-pid)\n"
            "    --uid UID                    Custom uid in the sandbox (requires --unshare-user or --userns)\n"
            "    --gid GID                    Custom gid in the sandbox (requires --unshare-user or --userns)\n"
@@ -1103,7 +1103,7 @@ setup_newroot (bool unshare_pid,
               if (ensure_dir (dest, 0755) != 0)
                 die_with_error ("Can't mkdir %s", op->dest);
             }
-          else if (ensure_file (dest, 0666) != 0)
+          else if (ensure_file (dest, 0444) != 0)
             die_with_error ("Can't create file at %s", op->dest);
 
           privileged_op (privileged_op_socket,
@@ -1148,7 +1148,7 @@ setup_newroot (bool unshare_pid,
               if (access (subdir, W_OK) < 0)
                 {
                   /* The file is already read-only or doesn't exist.  */
-                  if (errno == EACCES || errno == ENOENT)
+                  if (errno == EACCES || errno == ENOENT || errno == EROFS)
                     continue;
 
                   die_with_error ("Can't access %s", subdir);
@@ -1174,7 +1174,7 @@ setup_newroot (bool unshare_pid,
             {
               cleanup_free char *node_dest = strconcat3 (dest, "/", devnodes[i]);
               cleanup_free char *node_src = strconcat ("/oldroot/dev/", devnodes[i]);
-              if (create_file (node_dest, 0666, NULL) != 0)
+              if (create_file (node_dest, 0444, NULL) != 0)
                 die_with_error ("Can't create file %s/%s", op->dest, devnodes[i]);
               privileged_op (privileged_op_socket,
                              PRIV_SEP_OP_BIND_MOUNT, BIND_DEVICES,
@@ -1227,7 +1227,7 @@ setup_newroot (bool unshare_pid,
               cleanup_free char *src_tty_dev = strconcat ("/oldroot", host_tty_dev);
               cleanup_free char *dest_console = strconcat (dest, "/console");
 
-              if (create_file (dest_console, 0666, NULL) != 0)
+              if (create_file (dest_console, 0444, NULL) != 0)
                 die_with_error ("creating %s/console", op->dest);
 
               privileged_op (privileged_op_socket,
@@ -1295,7 +1295,7 @@ setup_newroot (bool unshare_pid,
 
             assert (dest != NULL);
 
-            if (ensure_file (dest, 0666) != 0)
+            if (ensure_file (dest, 0444) != 0)
               die_with_error ("Can't create file at %s", op->dest);
 
             privileged_op (privileged_op_socket,
@@ -1600,7 +1600,7 @@ parse_args_recurse (int          *argcp,
           if (argc < 2)
             die ("--remount-ro takes one argument");
 
-          SetupOp *op = setup_op_new (SETUP_REMOUNT_RO_NO_RECURSIVE);
+          op = setup_op_new (SETUP_REMOUNT_RO_NO_RECURSIVE);
           op->dest = argv[1];
 
           argv++;
@@ -2247,7 +2247,7 @@ main (int    argc,
 
   /* Never gain any more privs during exec */
   if (prctl (PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0) < 0)
-    die_with_error ("prctl(PR_SET_NO_NEW_CAPS) failed");
+    die_with_error ("prctl(PR_SET_NO_NEW_PRIVS) failed");
 
   /* The initial code is run with high permissions
      (i.e. CAP_SYS_ADMIN), so take lots of care. */
@@ -2632,7 +2632,7 @@ main (int    argc,
   /* Mark everything as slave, so that we still
    * receive mounts from the real root, but don't
    * propagate mounts to the real root. */
-  if (mount (NULL, "/", NULL, MS_SLAVE | MS_REC, NULL) < 0)
+  if (mount (NULL, "/", NULL, MS_SILENT | MS_SLAVE | MS_REC, NULL) < 0)
     die_with_error ("Failed to make / slave");
 
   /* Create a tmpfs which we will use as / in the namespace */
@@ -2655,7 +2655,7 @@ main (int    argc,
   if (mkdir ("newroot", 0755))
     die_with_error ("Creating newroot failed");
 
-  if (mount ("newroot", "newroot", NULL, MS_MGC_VAL | MS_BIND | MS_REC, NULL) < 0)
+  if (mount ("newroot", "newroot", NULL, MS_SILENT | MS_MGC_VAL | MS_BIND | MS_REC, NULL) < 0)
     die_with_error ("setting up newroot bind");
 
   if (mkdir ("oldroot", 0755))
@@ -2720,7 +2720,7 @@ main (int    argc,
   close_ops_fd ();
 
   /* The old root better be rprivate or we will send unmount events to the parent namespace */
-  if (mount ("oldroot", "oldroot", NULL, MS_REC | MS_PRIVATE, NULL) != 0)
+  if (mount ("oldroot", "oldroot", NULL, MS_SILENT | MS_REC | MS_PRIVATE, NULL) != 0)
     die_with_error ("Failed to make old root rprivate");
 
   if (umount2 ("oldroot", MNT_DETACH))

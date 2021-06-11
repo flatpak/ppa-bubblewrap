@@ -76,11 +76,11 @@ fi
 # Default arg, bind whole host fs to /, tmpfs on /tmp
 RUN="${BWRAP} --bind / / --tmpfs /tmp"
 
-if ! $RUN true; then
+if [ -z "${BWRAP_MUST_WORK-}" ] && ! $RUN true; then
     skip Seems like bwrap is not working at all. Maybe setuid is not working
 fi
 
-echo "1..49"
+echo "1..51"
 
 # Test help
 ${BWRAP} --help > help.txt
@@ -178,12 +178,14 @@ if test -n "${bwrap_is_suid:-}"; then
     echo "ok - # SKIP no --cap-add support"
     echo "ok - # SKIP no --cap-add support"
 else
-    BWRAP_RECURSE="$BWRAP --unshare-all --uid 0 --gid 0 --cap-add ALL --bind / / --bind /proc /proc"
-    $BWRAP_RECURSE -- $BWRAP --unshare-all --bind / / --bind /proc /proc echo hello > recursive_proc.txt
+    BWRAP_RECURSE="$BWRAP --unshare-user --uid 0 --gid 0 --cap-add ALL --bind / / --bind /proc /proc"
+
+    # $BWRAP May be inaccessable due to the user namespace so use /proc/self/exe
+    $BWRAP_RECURSE -- /proc/self/exe --unshare-all --bind / / --bind /proc /proc echo hello > recursive_proc.txt
     assert_file_has_content recursive_proc.txt "hello"
     echo "ok - can mount /proc recursively"
 
-    $BWRAP_RECURSE -- $BWRAP --unshare-all  ${BWRAP_RO_HOST_ARGS} findmnt > recursive-newroot.txt
+    $BWRAP_RECURSE -- /proc/self/exe --unshare-all  ${BWRAP_RO_HOST_ARGS} findmnt > recursive-newroot.txt
     assert_file_has_content recursive-newroot.txt "/usr"
     echo "ok - can pivot to new rootfs recursively"
 fi
@@ -233,7 +235,7 @@ fi
 # Test --die-with-parent
 
 cat >lockf-n.py <<EOF
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import struct,fcntl,sys
 path = sys.argv[1]
 if sys.argv[2] == 'wait':
@@ -278,7 +280,9 @@ for die_with_parent_argv in "--die-with-parent" "--die-with-parent --unshare-pid
 done
 
 printf '%s--dir\0/tmp/hello/world\0' '' > test.args
-$RUN --args 3 test -d /tmp/hello/world 3<test.args
+printf '%s--dir\0/tmp/hello/world2\0' '' > test.args2
+printf '%s--dir\0/tmp/hello/world3\0' '' > test.args3
+$RUN --args 3 --args 4 --args 5 /bin/sh -c 'test -d /tmp/hello/world && test -d /tmp/hello/world2 && test -d /tmp/hello/world3' 3<test.args 4<test.args2 5<test.args3
 echo "ok - we can parse arguments from a fd"
 
 mkdir bin
@@ -382,5 +386,25 @@ else
     echo "ok - Test --pidns"
 fi
 
+touch some-file
+mkdir -p some-dir
+rm -fr new-dir-mountpoint
+rm -fr new-file-mountpoint
+$RUN \
+    --bind "$(pwd -P)/some-dir" "$(pwd -P)/new-dir-mountpoint" \
+    --bind "$(pwd -P)/some-file" "$(pwd -P)/new-file-mountpoint" \
+    true
+command stat -c '%a' new-dir-mountpoint > new-dir-permissions
+assert_file_has_content new-dir-permissions 755
+command stat -c '%a' new-file-mountpoint > new-file-permissions
+assert_file_has_content new-file-permissions 444
+echo "ok - Files and directories created as mount points have expected permissions"
+
+if [ -S /dev/log ]; then
+    $RUN --bind / / --bind "$(realpath /dev/log)" "$(realpath /dev/log)" true
+    echo "ok - Can bind-mount a socket (/dev/log) onto a socket"
+else
+    echo "ok # SKIP - /dev/log is not a socket, cannot test bubblewrap#409"
+fi
 
 echo "ok - End of test"
