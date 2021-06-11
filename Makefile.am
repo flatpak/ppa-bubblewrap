@@ -32,6 +32,7 @@ check_PROGRAMS = test-bwrap
 test-bwrap: bwrap
 	rm -rf test-bwrap
 	cp bwrap test-bwrap
+	chmod 0755 test-bwrap
 if PRIV_MODE_SETUID
 	$(SUDO_BIN) chown root test-bwrap
 	$(SUDO_BIN) chmod u+s test-bwrap
@@ -52,6 +53,11 @@ EXTRA_DIST += tests/libtest-core.sh
 if ENABLE_BASH_COMPLETION
 bashcompletiondir = $(BASH_COMPLETION_DIR)
 dist_bashcompletion_DATA = completions/bash/bwrap
+endif
+
+if ENABLE_ZSH_COMPLETION
+zshcompletiondir = $(ZSH_COMPLETION_DIR)
+dist_zshcompletion_DATA = completions/zsh/_bwrap
 endif
 
 -include $(top_srcdir)/git.mk
