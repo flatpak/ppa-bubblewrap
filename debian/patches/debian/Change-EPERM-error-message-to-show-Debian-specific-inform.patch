@@ -8,7 +8,7 @@ Forwarded: not-needed
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bubblewrap.c b/bubblewrap.c
-index d65ffef..e90a9ad 100644
+index 26a8966..c477f42 100644
 --- a/bubblewrap.c
 +++ b/bubblewrap.c
 @@ -2463,7 +2463,7 @@ main (int    argc,

@@ -1,6 +1,2 @@
-Correct-name-of-PR_SET_NO_NEW_PRIVS-in-error-message.patch
-Add-MS_SILENT-to-most-mount-invocations.patch
-Accept-EROFS-for-access-check-of-proc-entries.patch
-Use-Python-3-for-test-demo-code.patch
 Fix-typos-for-descendant-in-man-page.patch
 debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch

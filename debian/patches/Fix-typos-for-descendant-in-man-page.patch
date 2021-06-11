@@ -11,7 +11,7 @@ Forwarded: https://github.com/containers/bubblewrap/pull/400
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/bwrap.xml b/bwrap.xml
-index 7c53207..f82682d 100644
+index e0e9c69..f383abb 100644
 --- a/bwrap.xml
 +++ b/bwrap.xml
 @@ -132,12 +132,12 @@
