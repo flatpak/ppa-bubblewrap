@@ -11,6 +11,13 @@ PKGDIR=$(CURDIR)/debian/bubblewrap
 %:
 	dh $@
 
+override_dh_auto_configure:
+	dh_auto_configure \
+		-- \
+		--with-zsh-completion-dir=/usr/share/zsh/vendor-completions \
+		${NULL}
+.PHONY: override_dh_auto_configure
+
 override_dh_fixperms:
 	chmod a+x $(PKGDIR)/usr/share/bash-completion/completions/bwrap
 	dh_fixperms
