@@ -88,8 +88,9 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 bin_PROGRAMS = bwrap$(EXEEXT)
-check_PROGRAMS = test-bwrap$(EXEEXT)
 @ENABLE_MAN_TRUE@am__append_1 = $(man_MANS)
+check_PROGRAMS = $(am__EXEEXT_1) $(am__EXEEXT_2)
+TESTS = $(am__EXEEXT_1) $(am__EXEEXT_3)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/attributes.m4 \
@@ -108,6 +109,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)" \
 	"$(DESTDIR)$(bashcompletiondir)" \
 	"$(DESTDIR)$(zshcompletiondir)"
+am__EXEEXT_1 = tests/test-utils$(EXEEXT)
+am__EXEEXT_2 = test-bwrap$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 am_bwrap_OBJECTS = bwrap-bubblewrap.$(OBJEXT) \
 	bwrap-bind-mount.$(OBJEXT) bwrap-network.$(OBJEXT) \
@@ -120,6 +123,10 @@ bwrap_LINK = $(CCLD) $(bwrap_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 am_test_bwrap_OBJECTS =
 test_bwrap_OBJECTS = $(am_test_bwrap_OBJECTS)
 test_bwrap_LDADD = $(LDADD)
+am_tests_test_utils_OBJECTS = test-utils.$(OBJEXT) utils.$(OBJEXT)
+tests_test_utils_OBJECTS = $(am_tests_test_utils_OBJECTS)
+tests_test_utils_DEPENDENCIES = $(am__DEPENDENCIES_1)
+am__dirstamp = $(am__leading_dot)dirstamp
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -137,7 +144,8 @@ depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/bwrap-bind-mount.Po \
 	./$(DEPDIR)/bwrap-bubblewrap.Po ./$(DEPDIR)/bwrap-network.Po \
-	./$(DEPDIR)/bwrap-utils.Po
+	./$(DEPDIR)/bwrap-utils.Po ./$(DEPDIR)/test-utils.Po \
+	./$(DEPDIR)/utils.Po
 am__mv = mv -f
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -155,8 +163,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(bwrap_SOURCES) $(test_bwrap_SOURCES)
-DIST_SOURCES = $(bwrap_SOURCES) $(test_bwrap_SOURCES)
+SOURCES = $(bwrap_SOURCES) $(test_bwrap_SOURCES) \
+	$(tests_test_utils_SOURCES)
+DIST_SOURCES = $(bwrap_SOURCES) $(test_bwrap_SOURCES) \
+	$(tests_test_utils_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -374,6 +384,7 @@ am__set_TESTS_bases = \
   bases=`echo $$bases`
 AM_TESTSUITE_SUMMARY_HEADER = ' for $(PACKAGE_STRING)'
 RECHECK_LOGS = $(TEST_LOGS)
+am__EXEEXT_3 = tests/test-run.sh
 TEST_SUITE_LOG = test-suite.log
 TEST_EXTENSIONS = @EXEEXT@ .test
 LOG_COMPILE = $(LOG_COMPILER) $(AM_LOG_FLAGS) $(LOG_FLAGS)
@@ -469,6 +480,8 @@ PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
 PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
 PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
+SELINUX_2_3_CFLAGS = @SELINUX_2_3_CFLAGS@
+SELINUX_2_3_LIBS = @SELINUX_2_3_LIBS@
 SELINUX_CFLAGS = @SELINUX_CFLAGS@
 SELINUX_LIBS = @SELINUX_LIBS@
 SET_MAKE = @SET_MAKE@
@@ -528,7 +541,8 @@ EXTRA_DIST = .dir-locals.el .editorconfig README.md autogen.sh \
 	demos/bubblewrap-shell.sh demos/flatpak-run.sh \
 	demos/flatpak.bpf demos/userns-block-fd.py \
 	packaging/bubblewrap.spec uncrustify.cfg uncrustify.sh $(NULL) \
-	bwrap.xml $(TESTS) tests/libtest-core.sh
+	bwrap.xml $(test_scripts) tests/libtest-core.sh \
+	tests/libtest.sh
 GITIGNOREFILES = build-aux/ gtk-doc.make config.h.in aclocal.m4
 bwrap_srcpath := $(srcdir)
 bwrap_SOURCES = \
@@ -543,6 +557,25 @@ bwrap_SOURCES = \
 
 bwrap_CFLAGS = $(AM_CFLAGS)
 bwrap_LDADD = $(SELINUX_LIBS)
+test_programs = \
+	tests/test-utils \
+	$(NULL)
+
+test_scripts = \
+	tests/test-run.sh \
+	$(NULL)
+
+test_extra_programs = \
+	test-bwrap \
+	$(NULL)
+
+tests_test_utils_SOURCES = \
+	tests/test-utils.c \
+	utils.h \
+	utils.c \
+	$(NULL)
+
+tests_test_utils_LDADD = $(SELINUX_LIBS)
 test_bwrap_SOURCES = 
 XSLTPROC_FLAGS = \
 	--nonet \
@@ -555,8 +588,12 @@ XSLTPROC_FLAGS = \
 @ENABLE_MAN_TRUE@man_MANS = bwrap.1
 LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) $(top_srcdir)/build-aux/tap-driver.sh
 LOG_COMPILER = 
-TESTS = tests/test-run.sh
-TESTS_ENVIRONMENT = BWRAP=$(abs_top_builddir)/test-bwrap
+TESTS_ENVIRONMENT = \
+	BWRAP=$(abs_top_builddir)/test-bwrap \
+	G_TEST_BUILDDIR=$(abs_top_builddir) \
+	G_TEST_SRCDIR=$(abs_top_srcdir) \
+	$(NULL)
+
 @ENABLE_BASH_COMPLETION_TRUE@bashcompletiondir = $(BASH_COMPLETION_DIR)
 @ENABLE_BASH_COMPLETION_TRUE@dist_bashcompletion_DATA = completions/bash/bwrap
 @ENABLE_ZSH_COMPLETION_TRUE@zshcompletiondir = $(ZSH_COMPLETION_DIR)
@@ -668,6 +705,13 @@ clean-checkPROGRAMS:
 bwrap$(EXEEXT): $(bwrap_OBJECTS) $(bwrap_DEPENDENCIES) $(EXTRA_bwrap_DEPENDENCIES) 
 	@rm -f bwrap$(EXEEXT)
 	$(AM_V_CCLD)$(bwrap_LINK) $(bwrap_OBJECTS) $(bwrap_LDADD) $(LIBS)
+tests/$(am__dirstamp):
+	@$(MKDIR_P) tests
+	@: > tests/$(am__dirstamp)
+
+tests/test-utils$(EXEEXT): $(tests_test_utils_OBJECTS) $(tests_test_utils_DEPENDENCIES) $(EXTRA_tests_test_utils_DEPENDENCIES) tests/$(am__dirstamp)
+	@rm -f tests/test-utils$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(tests_test_utils_OBJECTS) $(tests_test_utils_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -679,6 +723,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bwrap-bubblewrap.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bwrap-network.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bwrap-utils.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test-utils.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -755,6 +801,20 @@ bwrap-utils.obj: $(bwrap_srcpath)/utils.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$(bwrap_srcpath)/utils.c' object='bwrap-utils.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(bwrap_CFLAGS) $(CFLAGS) -c -o bwrap-utils.obj `if test -f '$(bwrap_srcpath)/utils.c'; then $(CYGPATH_W) '$(bwrap_srcpath)/utils.c'; else $(CYGPATH_W) '$(srcdir)/$(bwrap_srcpath)/utils.c'; fi`
+
+test-utils.o: tests/test-utils.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test-utils.o -MD -MP -MF $(DEPDIR)/test-utils.Tpo -c -o test-utils.o `test -f 'tests/test-utils.c' || echo '$(srcdir)/'`tests/test-utils.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-utils.Tpo $(DEPDIR)/test-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/test-utils.c' object='test-utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test-utils.o `test -f 'tests/test-utils.c' || echo '$(srcdir)/'`tests/test-utils.c
+
+test-utils.obj: tests/test-utils.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT test-utils.obj -MD -MP -MF $(DEPDIR)/test-utils.Tpo -c -o test-utils.obj `if test -f 'tests/test-utils.c'; then $(CYGPATH_W) 'tests/test-utils.c'; else $(CYGPATH_W) '$(srcdir)/tests/test-utils.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/test-utils.Tpo $(DEPDIR)/test-utils.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='tests/test-utils.c' object='test-utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o test-utils.obj `if test -f 'tests/test-utils.c'; then $(CYGPATH_W) 'tests/test-utils.c'; else $(CYGPATH_W) '$(srcdir)/tests/test-utils.c'; fi`
 install-man1: $(man_MANS)
 	@$(NORMAL_INSTALL)
 	@list1=''; \
@@ -1041,6 +1101,13 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
+tests/test-utils.log: tests/test-utils$(EXEEXT)
+	@p='tests/test-utils$(EXEEXT)'; \
+	b='tests/test-utils'; \
+	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
+	--log-file $$b.log --trs-file $$b.trs \
+	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
+	"$$tst" $(AM_TESTS_FD_REDIRECT)
 tests/test-run.sh.log: tests/test-run.sh
 	@p='tests/test-run.sh'; \
 	b='tests/test-run.sh'; \
@@ -1273,6 +1340,7 @@ clean-generic:
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
 	-test . = "$(srcdir)" || test -z "$(CONFIG_CLEAN_VPATH_FILES)" || rm -f $(CONFIG_CLEAN_VPATH_FILES)
+	-rm -f tests/$(am__dirstamp)
 
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
@@ -1288,6 +1356,8 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/bwrap-bubblewrap.Po
 	-rm -f ./$(DEPDIR)/bwrap-network.Po
 	-rm -f ./$(DEPDIR)/bwrap-utils.Po
+	-rm -f ./$(DEPDIR)/test-utils.Po
+	-rm -f ./$(DEPDIR)/utils.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-hdr distclean-tags
@@ -1341,6 +1411,8 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/bwrap-bubblewrap.Po
 	-rm -f ./$(DEPDIR)/bwrap-network.Po
 	-rm -f ./$(DEPDIR)/bwrap-utils.Po
+	-rm -f ./$(DEPDIR)/test-utils.Po
+	-rm -f ./$(DEPDIR)/utils.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
