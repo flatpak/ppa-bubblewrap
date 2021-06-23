@@ -631,6 +631,8 @@ PRIV_MODE_SETUID_TRUE
 WARN_CFLAGS
 HAVE_SELINUX_FALSE
 HAVE_SELINUX_TRUE
+SELINUX_2_3_LIBS
+SELINUX_2_3_CFLAGS
 SELINUX_LIBS
 SELINUX_CFLAGS
 ENABLE_ZSH_COMPLETION_FALSE
@@ -766,7 +768,9 @@ PKG_CONFIG_LIBDIR
 BASH_COMPLETION_CFLAGS
 BASH_COMPLETION_LIBS
 SELINUX_CFLAGS
-SELINUX_LIBS'
+SELINUX_LIBS
+SELINUX_2_3_CFLAGS
+SELINUX_2_3_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1444,6 +1448,10 @@ Some influential environment variables:
               C compiler flags for SELINUX, overriding pkg-config
   SELINUX_LIBS
               linker flags for SELINUX, overriding pkg-config
+  SELINUX_2_3_CFLAGS
+              C compiler flags for SELINUX_2_3, overriding pkg-config
+  SELINUX_2_3_LIBS
+              linker flags for SELINUX_2_3, overriding pkg-config
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -5655,6 +5663,79 @@ fi
         if test "x$have_selinux" = xno -a "x$enable_selinux" = xyes; then
                 as_fn_error $? "*** SELinux support requested but libraries not found" "$LINENO" 5
         fi
+
+pkg_failed=no
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for libselinux >= 2.3" >&5
+$as_echo_n "checking for libselinux >= 2.3... " >&6; }
+
+if test -n "$SELINUX_2_3_CFLAGS"; then
+    pkg_cv_SELINUX_2_3_CFLAGS="$SELINUX_2_3_CFLAGS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libselinux >= 2.3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libselinux >= 2.3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SELINUX_2_3_CFLAGS=`$PKG_CONFIG --cflags "libselinux >= 2.3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+if test -n "$SELINUX_2_3_LIBS"; then
+    pkg_cv_SELINUX_2_3_LIBS="$SELINUX_2_3_LIBS"
+ elif test -n "$PKG_CONFIG"; then
+    if test -n "$PKG_CONFIG" && \
+    { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"libselinux >= 2.3\""; } >&5
+  ($PKG_CONFIG --exists --print-errors "libselinux >= 2.3") 2>&5
+  ac_status=$?
+  $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
+  test $ac_status = 0; }; then
+  pkg_cv_SELINUX_2_3_LIBS=`$PKG_CONFIG --libs "libselinux >= 2.3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes
+else
+  pkg_failed=yes
+fi
+ else
+    pkg_failed=untried
+fi
+
+
+
+if test $pkg_failed = yes; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi
+        if test $_pkg_short_errors_supported = yes; then
+	        SELINUX_2_3_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "libselinux >= 2.3" 2>&1`
+        else
+	        SELINUX_2_3_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "libselinux >= 2.3" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$SELINUX_2_3_PKG_ERRORS" >&5
+
+	:
+elif test $pkg_failed = untried; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+	:
+else
+	SELINUX_2_3_CFLAGS=$pkg_cv_SELINUX_2_3_CFLAGS
+	SELINUX_2_3_LIBS=$pkg_cv_SELINUX_2_3_LIBS
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+
+$as_echo "#define HAVE_SELINUX_2_3 1" >>confdefs.h
+
+fi
 fi
  if test "$have_selinux" = "yes"; then
   HAVE_SELINUX_TRUE=
@@ -5684,6 +5765,8 @@ fi
         -Werror=incompatible-pointer-types \
         -Werror=misleading-indentation \
 	-Werror=missing-include-dirs -Werror=aggregate-return \
+        -Werror=switch-default \
+        -Wswitch-enum \
 ; do
 
   { $as_echo "$as_me:${as_lineno-$LINENO}: checking if $CC supports flag $flag in envvar CFLAGS" >&5
