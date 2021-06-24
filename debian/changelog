@@ -1,4 +1,4 @@
-bubblewrap (0.4.1+git20210610-1) UNRELEASED; urgency=medium
+bubblewrap (0.4.1+git20210623-1) UNRELEASED; urgency=medium
 
   * Branch for experimental
   * New upstream git snapshot
@@ -6,6 +6,13 @@ bubblewrap (0.4.1+git20210610-1) UNRELEASED; urgency=medium
     - Allow mounting a non-directory over any existing non-directory,
       non-symlink, in particular mounting a socket over a socket
     - Add zsh completion
+    - Cope better with case-insensitive filesystems
+    - Better error messages when failing to mount a filesystem
+    - New --clearenv option
+    - New --perms option allows control over permissions of --bind-data,
+      --dir (if newly-created), --file, --ro-bind-data and --tmpfs
+    - New --chmod option
+    - Better test coverage
     - Drop most patches, applied upstream
 
  -- Simon McVittie <smcv@debian.org>  Fri, 11 Jun 2021 10:25:59 +0100
