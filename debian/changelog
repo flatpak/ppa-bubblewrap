@@ -1,4 +1,4 @@
-bubblewrap (0.4.1+git20210623-1) UNRELEASED; urgency=medium
+bubblewrap (0.4.1+git20210624-1) UNRELEASED; urgency=medium
 
   * Branch for experimental
   * New upstream git snapshot
@@ -13,6 +13,7 @@ bubblewrap (0.4.1+git20210623-1) UNRELEASED; urgency=medium
       --dir (if newly-created), --file, --ro-bind-data and --tmpfs
     - New --chmod option
     - Better test coverage
+    - Better zsh completion
     - Drop most patches, applied upstream
 
  -- Simon McVittie <smcv@debian.org>  Fri, 11 Jun 2021 10:25:59 +0100
