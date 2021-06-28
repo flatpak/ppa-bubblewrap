@@ -18,12 +18,6 @@ override_dh_auto_configure:
 		${NULL}
 .PHONY: override_dh_auto_configure
 
-override_dh_fixperms:
-	chmod a+x $(PKGDIR)/usr/share/bash-completion/completions/bwrap
-	dh_fixperms
-
-.PHONY: override_dh_fixperms
-
 override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	# Remove LD_PRELOAD so we don't run with faketime. It uses
