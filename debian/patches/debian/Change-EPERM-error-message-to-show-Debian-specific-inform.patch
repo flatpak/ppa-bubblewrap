@@ -8,10 +8,10 @@ Forwarded: not-needed
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bubblewrap.c b/bubblewrap.c
-index 26a8966..c477f42 100644
+index fc2edbb..40aca5d 100644
 --- a/bubblewrap.c
 +++ b/bubblewrap.c
-@@ -2463,7 +2463,7 @@ main (int    argc,
+@@ -2652,7 +2652,7 @@ main (int    argc,
            if (errno == EINVAL)
              die ("Creating new namespace failed, likely because the kernel does not support user namespaces.  bwrap must be installed setuid on such systems.");
            else if (errno == EPERM && !is_privileged)
