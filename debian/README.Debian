@@ -145,7 +145,7 @@ To use bubblewrap with kernel.unprivileged_userns_clone set to 0
 or user.max_user_namespaces set to 0, it is necessary to make the bwrap
 executable setuid root. This gives it the necessary capabilities to set
 up containers even when run by an otherwise unprivileged user, and is the
-configuration normally used in Debian.
+configuration normally used in Debian 10.
 
 This can be a security risk: if there are bugs in bubblewrap, it might be
 possible for an unprivileged user to get root privileges by running a
