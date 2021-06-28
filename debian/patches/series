@@ -1,1 +1,3 @@
+build-Fix-installation-of-zsh-completions-in-user-specifi.patch
+completions-Don-t-start-bash-completion-with.patch
 debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch
