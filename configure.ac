@@ -1,5 +1,5 @@
 AC_PREREQ([2.63])
-AC_INIT([bubblewrap], [0.4.1], [atomic-devel@projectatomic.io])
+AC_INIT([bubblewrap], [0.5.0], [atomic-devel@projectatomic.io])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -62,7 +62,7 @@ AC_ARG_WITH([zsh-completion-dir],
 if test "x$with_zsh_completion_dir" = "xyes"; then
         [ZSH_COMPLETION_DIR="$datadir/zsh/site-functions"]
 else
-    ZSH_COMPLETION_DIR="$with_bash_completion_dir"
+    ZSH_COMPLETION_DIR="$with_zsh_completion_dir"
 fi
 
 
