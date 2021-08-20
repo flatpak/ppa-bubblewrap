@@ -1,3 +1,10 @@
+bubblewrap (0.5.0-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    - Drop patches that were applied upstream
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 15:57:49 +0100
+
 bubblewrap (0.4.1+git20210624-1) experimental; urgency=medium
 
   * Branch for experimental
