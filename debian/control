@@ -8,7 +8,7 @@ Uploaders:
 Build-Depends:
  automake (>= 1.14.1),
  bash-completion,
- debhelper-compat (= 12),
+ debhelper-compat (= 13),
  docbook-xml,
  docbook-xsl,
  libcap-dev,
