@@ -1,9 +1,13 @@
-bubblewrap (0.5.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.5.0-1) unstable; urgency=medium
 
   * New upstream release
     - Drop patches that were applied upstream
+  * Standards-Version: 4.6.0 (no changes required)
+  * Use recommended debhelper compat level 13
+    - No need to check for DEB_BUILD_OPTIONS=nocheck any more
+  * Release to unstable
 
- -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 15:57:49 +0100
+ -- Simon McVittie <smcv@debian.org>  Fri, 20 Aug 2021 16:19:25 +0100
 
 bubblewrap (0.4.1+git20210624-1) experimental; urgency=medium
 
