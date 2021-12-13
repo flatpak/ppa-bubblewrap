@@ -1,5 +1,5 @@
 AC_PREREQ([2.63])
-AC_INIT([bubblewrap], [0.4.1], [atomic-devel@projectatomic.io])
+AC_INIT([bubblewrap], [0.5.0], [atomic-devel@projectatomic.io])
 AC_CONFIG_HEADER([config.h])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([build-aux])
@@ -14,6 +14,7 @@ AC_SYS_LARGEFILE
 
 AC_PROG_CC
 AM_PROG_CC_C_O
+PKG_PROG_PKG_CONFIG([])
 
 AC_CHECK_HEADERS([sys/capability.h], [], [AC_MSG_ERROR([*** POSIX caps headers not found])])
 
@@ -51,6 +52,23 @@ fi
 
 AC_SUBST([BASH_COMPLETION_DIR])
 AM_CONDITIONAL([ENABLE_BASH_COMPLETION],[test "x$with_bash_completion_dir" != "xno"])
+
+AC_ARG_WITH([zsh-completion-dir],
+    AS_HELP_STRING([--with-zsh-completion-dir[=PATH]],
+        [Install the zsh auto-completion script in this directory. @<:@default=yes@:>@]),
+    [],
+    [with_zsh_completion_dir=yes])
+
+if test "x$with_zsh_completion_dir" = "xyes"; then
+        [ZSH_COMPLETION_DIR="$datadir/zsh/site-functions"]
+else
+    ZSH_COMPLETION_DIR="$with_zsh_completion_dir"
+fi
+
+
+AC_SUBST([ZSH_COMPLETION_DIR])
+AM_CONDITIONAL([ENABLE_ZSH_COMPLETION], [test "x$with_zsh_completion_dir" != "xno"])
+
 # ------------------------------------------------------------------------------
 have_selinux=no
 AC_ARG_ENABLE(selinux, AS_HELP_STRING([--disable-selinux], [Disable optional SELINUX support]))
@@ -63,6 +81,9 @@ if test "x$enable_selinux" != "xno"; then
         if test "x$have_selinux" = xno -a "x$enable_selinux" = xyes; then
                 AC_MSG_ERROR([*** SELinux support requested but libraries not found])
         fi
+        PKG_CHECK_MODULES([SELINUX_2_3], [libselinux >= 2.3],
+                [AC_DEFINE(HAVE_SELINUX_2_3, 1, [Define if SELinux is version >= 2.3])],
+                [:])
 fi
 AM_CONDITIONAL(HAVE_SELINUX, [test "$have_selinux" = "yes"])
 
@@ -70,6 +91,7 @@ dnl Keep this in sync with ostree, except remove -Werror=declaration-after-state
 CC_CHECK_FLAGS_APPEND([WARN_CFLAGS], [CFLAGS], [\
         -pipe \
         -Wall \
+        -Werror=shadow \
 	-Werror=empty-body \
 	-Werror=strict-prototypes \
 	-Werror=missing-prototypes \
@@ -84,6 +106,8 @@ CC_CHECK_FLAGS_APPEND([WARN_CFLAGS], [CFLAGS], [\
         -Werror=incompatible-pointer-types \
         -Werror=misleading-indentation \
 	-Werror=missing-include-dirs -Werror=aggregate-return \
+        -Werror=switch-default \
+        -Wswitch-enum \
 ])
 AC_SUBST(WARN_CFLAGS)
 

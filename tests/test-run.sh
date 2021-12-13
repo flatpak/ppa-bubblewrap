@@ -2,85 +2,13 @@
 
 set -xeuo pipefail
 
-# Make sure /sbin/getpcaps etc. are in our PATH even if non-root
-PATH="$PATH:/usr/sbin:/sbin"
+srcd=$(cd $(dirname "$0") && pwd)
 
-srcd=$(cd $(dirname $0) && pwd)
+. ${srcd}/libtest.sh
 
-. ${srcd}/libtest-core.sh
+bn=$(basename "$0")
 
-bn=$(basename $0)
-tempdir=$(mktemp -d /var/tmp/tap-test.XXXXXX)
-touch ${tempdir}/.testtmp
-function cleanup () {
-    if test -n "${TEST_SKIP_CLEANUP:-}"; then
-        echo "Skipping cleanup of ${test_tmpdir}"
-    else if test -f ${tempdir}/.test; then
-        rm "${tempdir}" -rf
-    fi
-    fi
-}
-trap cleanup EXIT
-cd ${tempdir}
-
-: "${BWRAP:=bwrap}"
-if test -u "$(type -p ${BWRAP})"; then
-    bwrap_is_suid=true
-fi
-
-FUSE_DIR=
-for mp in $(cat /proc/self/mounts | grep " fuse[. ]" | grep user_id=$(id -u) | awk '{print $2}'); do
-    if test -d $mp; then
-        echo Using $mp as test fuse mount
-        FUSE_DIR=$mp
-        break
-    fi
-done
-
-if test "$(id -u)" = "0"; then
-    is_uidzero=true
-else
-    is_uidzero=false
-fi
-
-# This is supposed to be an otherwise readable file in an unreadable (by the user) dir
-UNREADABLE=/root/.bashrc
-if ${is_uidzero} || test -x `dirname $UNREADABLE`; then
-    UNREADABLE=
-fi
-
-# https://github.com/projectatomic/bubblewrap/issues/217
-# are we on a merged-/usr system?
-if [ /lib -ef /usr/lib ]; then
-    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
-              --ro-bind /etc /etc
-              --dir /var/tmp
-              --symlink usr/lib /lib
-              --symlink usr/lib64 /lib64
-              --symlink usr/bin /bin
-              --symlink usr/sbin /sbin
-              --proc /proc
-              --dev /dev"
-else
-    BWRAP_RO_HOST_ARGS="--ro-bind /usr /usr
-              --ro-bind /etc /etc
-              --ro-bind /bin /bin
-              --ro-bind /lib /lib
-              --ro-bind-try /lib64 /lib64
-              --ro-bind /sbin /sbin
-              --dir /var/tmp
-              --proc /proc
-              --dev /dev"
-fi
-
-# Default arg, bind whole host fs to /, tmpfs on /tmp
-RUN="${BWRAP} --bind / / --tmpfs /tmp"
-
-if ! $RUN true; then
-    skip Seems like bwrap is not working at all. Maybe setuid is not working
-fi
-
-echo "1..49"
+echo "1..54"
 
 # Test help
 ${BWRAP} --help > help.txt
@@ -160,7 +88,7 @@ done
 
 echo "ok namespace id info in info and json-status fd"
 
-if ! which strace 2>/dev/null || ! strace -h | grep -v -e default | grep -e fault; then
+if ! which strace >/dev/null 2>/dev/null || ! strace -h | grep -v -e default | grep -e fault >/dev/null; then
     echo "ok - # SKIP no strace fault injection"
 else
     ! strace -o /dev/null -f -e trace=prctl -e fault=prctl:when=39 $RUN --die-with-parent --json-status-fd 42 true 42>json-status.json
@@ -178,12 +106,14 @@ if test -n "${bwrap_is_suid:-}"; then
     echo "ok - # SKIP no --cap-add support"
     echo "ok - # SKIP no --cap-add support"
 else
-    BWRAP_RECURSE="$BWRAP --unshare-all --uid 0 --gid 0 --cap-add ALL --bind / / --bind /proc /proc"
-    $BWRAP_RECURSE -- $BWRAP --unshare-all --bind / / --bind /proc /proc echo hello > recursive_proc.txt
+    BWRAP_RECURSE="$BWRAP --unshare-user --uid 0 --gid 0 --cap-add ALL --bind / / --bind /proc /proc"
+
+    # $BWRAP May be inaccessable due to the user namespace so use /proc/self/exe
+    $BWRAP_RECURSE -- /proc/self/exe --unshare-all --bind / / --bind /proc /proc echo hello > recursive_proc.txt
     assert_file_has_content recursive_proc.txt "hello"
     echo "ok - can mount /proc recursively"
 
-    $BWRAP_RECURSE -- $BWRAP --unshare-all  ${BWRAP_RO_HOST_ARGS} findmnt > recursive-newroot.txt
+    $BWRAP_RECURSE -- /proc/self/exe --unshare-all  ${BWRAP_RO_HOST_ARGS} findmnt > recursive-newroot.txt
     assert_file_has_content recursive-newroot.txt "/usr"
     echo "ok - can pivot to new rootfs recursively"
 fi
@@ -199,7 +129,7 @@ if ! ${is_uidzero}; then
     # When invoked as non-root, check that by default we have no caps left
     for OPT in "" "--unshare-user-try --as-pid-1" "--unshare-user-try" "--as-pid-1"; do
         e=0
-        $RUN $OPT --unshare-pid getpcaps 1 2> caps.test || e=$?
+        $RUN $OPT --unshare-pid getpcaps 1 >&2 2> caps.test || e=$?
         sed -e 's/^/# /' < caps.test >&2
         test "$e" = 0
         assert_not_file_has_content caps.test ': =.*cap'
@@ -233,7 +163,7 @@ fi
 # Test --die-with-parent
 
 cat >lockf-n.py <<EOF
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import struct,fcntl,sys
 path = sys.argv[1]
 if sys.argv[2] == 'wait':
@@ -278,7 +208,9 @@ for die_with_parent_argv in "--die-with-parent" "--die-with-parent --unshare-pid
 done
 
 printf '%s--dir\0/tmp/hello/world\0' '' > test.args
-$RUN --args 3 test -d /tmp/hello/world 3<test.args
+printf '%s--dir\0/tmp/hello/world2\0' '' > test.args2
+printf '%s--dir\0/tmp/hello/world3\0' '' > test.args3
+$RUN --args 3 --args 4 --args 5 /bin/sh -c 'test -d /tmp/hello/world && test -d /tmp/hello/world2 && test -d /tmp/hello/world3' 3<test.args 4<test.args2 5<test.args3
 echo "ok - we can parse arguments from a fd"
 
 mkdir bin
@@ -347,40 +279,161 @@ if $RUN --bind "$(pwd)" /tmp/here test -d /tmp/newroot; then
 fi
 echo "ok - we can mount another directory inside /tmp"
 
-# These tests need user namespaces
-if test -n "${bwrap_is_suid:-}"; then
-    echo "ok - # SKIP no setuid support for --unshare-user"
-    echo "ok - # SKIP no setuid support for --unshare-user"
+touch some-file
+mkdir -p some-dir
+rm -fr new-dir-mountpoint
+rm -fr new-file-mountpoint
+$RUN \
+    --bind "$(pwd -P)/some-dir" "$(pwd -P)/new-dir-mountpoint" \
+    --bind "$(pwd -P)/some-file" "$(pwd -P)/new-file-mountpoint" \
+    true
+command stat -c '%a' new-dir-mountpoint > new-dir-permissions
+assert_file_has_content new-dir-permissions 755
+command stat -c '%a' new-file-mountpoint > new-file-permissions
+assert_file_has_content new-file-permissions 444
+echo "ok - Files and directories created as mount points have expected permissions"
+
+
+if [ -S /dev/log ]; then
+    $RUN --bind / / --bind "$(realpath /dev/log)" "$(realpath /dev/log)" true
+    echo "ok - Can bind-mount a socket (/dev/log) onto a socket"
 else
-    mkfifo donepipe
-
-    $RUN --info-fd 42 --unshare-user sh -c 'readlink /proc/self/ns/user > sandbox-userns; cat < donepipe' 42>info.json &
-    while ! test -f sandbox-userns; do sleep 1; done
-    SANDBOX1PID=$(extract_child_pid info.json)
-
-    $RUN  --userns 11 readlink /proc/self/ns/user > sandbox2-userns 11< /proc/$SANDBOX1PID/ns/user
-    echo foo > donepipe
-
-    assert_files_equal sandbox-userns sandbox2-userns
-
-    rm donepipe info.json sandbox-userns
-
-    echo "ok - Test --userns"
-
-    mkfifo donepipe
-    $RUN --info-fd 42 --unshare-user --unshare-pid sh -c 'readlink /proc/self/ns/pid > sandbox-pidns; cat < donepipe' 42>info.json &
-    while ! test -f sandbox-pidns; do sleep 1; done
-    SANDBOX1PID=$(extract_child_pid info.json)
-
-    $RUN --userns 11 --pidns 12 readlink /proc/self/ns/pid > sandbox2-pidns 11< /proc/$SANDBOX1PID/ns/user 12< /proc/$SANDBOX1PID/ns/pid
-    echo foo > donepipe
-
-    assert_files_equal sandbox-pidns sandbox2-pidns
-
-    rm donepipe info.json sandbox-pidns
-
-    echo "ok - Test --pidns"
+    echo "ok # SKIP - /dev/log is not a socket, cannot test bubblewrap#409"
 fi
 
+mkdir -p dir-already-existed
+chmod 0710 dir-already-existed
+mkdir -p dir-already-existed2
+chmod 0754 dir-already-existed2
+rm -fr new-dir-default-perms
+rm -fr new-dir-set-perms
+$RUN \
+    --perms 1741 --dir "$(pwd -P)/new-dir-set-perms" \
+    --dir "$(pwd -P)/dir-already-existed" \
+    --perms 0741 --dir "$(pwd -P)/dir-already-existed2" \
+    --dir "$(pwd -P)/dir-chmod" \
+    --chmod 1755 "$(pwd -P)/dir-chmod" \
+    --dir "$(pwd -P)/new-dir-default-perms" \
+    true
+command stat -c '%a' new-dir-default-perms > new-dir-permissions
+assert_file_has_content new-dir-permissions '^755$'
+command stat -c '%a' new-dir-set-perms > new-dir-permissions
+assert_file_has_content new-dir-permissions '^1741$'
+command stat -c '%a' dir-already-existed > dir-permissions
+assert_file_has_content dir-permissions '^710$'
+command stat -c '%a' dir-already-existed2 > dir-permissions
+assert_file_has_content dir-permissions '^754$'
+command stat -c '%a' dir-chmod > dir-permissions
+assert_file_has_content dir-permissions '^1755$'
+echo "ok - Directories created explicitly have expected permissions"
+
+rm -fr parent
+rm -fr parent-of-1777
+rm -fr parent-of-0755
+rm -fr parent-of-0644
+rm -fr parent-of-0750
+rm -fr parent-of-0710
+rm -fr parent-of-0720
+rm -fr parent-of-0640
+rm -fr parent-of-0700
+rm -fr parent-of-0600
+rm -fr parent-of-0705
+rm -fr parent-of-0604
+rm -fr parent-of-0000
+$RUN \
+    --dir "$(pwd -P)"/parent/dir \
+    --perms 1777 --dir "$(pwd -P)"/parent-of-1777/dir \
+    --perms 0755 --dir "$(pwd -P)"/parent-of-0755/dir \
+    --perms 0644 --dir "$(pwd -P)"/parent-of-0644/dir \
+    --perms 0750 --dir "$(pwd -P)"/parent-of-0750/dir \
+    --perms 0710 --dir "$(pwd -P)"/parent-of-0710/dir \
+    --perms 0720 --dir "$(pwd -P)"/parent-of-0720/dir \
+    --perms 0640 --dir "$(pwd -P)"/parent-of-0640/dir \
+    --perms 0700 --dir "$(pwd -P)"/parent-of-0700/dir \
+    --perms 0600 --dir "$(pwd -P)"/parent-of-0600/dir \
+    --perms 0705 --dir "$(pwd -P)"/parent-of-0705/dir \
+    --perms 0604 --dir "$(pwd -P)"/parent-of-0604/dir \
+    --perms 0000 --dir "$(pwd -P)"/parent-of-0000/dir \
+    true
+command stat -c '%a' parent > dir-permissions
+assert_file_has_content dir-permissions '^755$'
+command stat -c '%a' parent-of-1777 > dir-permissions
+assert_file_has_content dir-permissions '^755$'
+command stat -c '%a' parent-of-0755 > dir-permissions
+assert_file_has_content dir-permissions '^755$'
+command stat -c '%a' parent-of-0644 > dir-permissions
+assert_file_has_content dir-permissions '^755$'
+command stat -c '%a' parent-of-0750 > dir-permissions
+assert_file_has_content dir-permissions '^750$'
+command stat -c '%a' parent-of-0710 > dir-permissions
+assert_file_has_content dir-permissions '^750$'
+command stat -c '%a' parent-of-0720 > dir-permissions
+assert_file_has_content dir-permissions '^750$'
+command stat -c '%a' parent-of-0640 > dir-permissions
+assert_file_has_content dir-permissions '^750$'
+command stat -c '%a' parent-of-0700 > dir-permissions
+assert_file_has_content dir-permissions '^700$'
+command stat -c '%a' parent-of-0600 > dir-permissions
+assert_file_has_content dir-permissions '^700$'
+command stat -c '%a' parent-of-0705 > dir-permissions
+assert_file_has_content dir-permissions '^705$'
+command stat -c '%a' parent-of-0604 > dir-permissions
+assert_file_has_content dir-permissions '^705$'
+command stat -c '%a' parent-of-0000 > dir-permissions
+assert_file_has_content dir-permissions '^700$'
+chmod -R 0700 parent*
+rm -fr parent*
+echo "ok - Directories created as parents have expected permissions"
+
+$RUN \
+    --perms 01777 --tmpfs "$(pwd -P)" \
+    cat /proc/self/mountinfo >&2
+$RUN \
+    --perms 01777 --tmpfs "$(pwd -P)" \
+    stat -c '%a' "$(pwd -P)" > dir-permissions
+assert_file_has_content dir-permissions '^1777$'
+$RUN \
+    --tmpfs "$(pwd -P)" \
+    stat -c '%a' "$(pwd -P)" > dir-permissions
+assert_file_has_content dir-permissions '^755$'
+echo "ok - tmpfs has expected permissions"
+
+$RUN \
+    --file 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^666$'
+$RUN \
+    --perms 0640 --file 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^640$'
+$RUN \
+    --bind-data 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^600$'
+$RUN \
+    --perms 0640 --bind-data 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^640$'
+$RUN \
+    --ro-bind-data 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^600$'
+$RUN \
+    --perms 0640 --ro-bind-data 0 /tmp/file \
+    stat -c '%a' /tmp/file < /dev/null > file-permissions
+assert_file_has_content file-permissions '^640$'
+echo "ok - files have expected permissions"
+
+FOO= BAR=baz $RUN --setenv FOO bar sh -c 'echo "$FOO$BAR"' > stdout
+assert_file_has_content stdout barbaz
+FOO=wrong BAR=baz $RUN --setenv FOO bar sh -c 'echo "$FOO$BAR"' > stdout
+assert_file_has_content stdout barbaz
+FOO=wrong BAR=baz $RUN --unsetenv FOO sh -c 'printf "%s%s" "$FOO" "$BAR"' > stdout
+printf baz > reference
+assert_files_equal stdout reference
+FOO=wrong BAR=wrong $RUN --clearenv /usr/bin/env > stdout
+echo "PWD=$(pwd -P)" > reference
+assert_files_equal stdout reference
+echo "ok - environment manipulation"
 
 echo "ok - End of test"

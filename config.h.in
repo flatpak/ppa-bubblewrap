@@ -15,6 +15,9 @@
 /* Define if SELinux is available */
 #undef HAVE_SELINUX
 
+/* Define if SELinux is version >= 2.3 */
+#undef HAVE_SELINUX_2_3
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
