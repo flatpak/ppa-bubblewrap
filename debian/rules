@@ -9,12 +9,12 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+pie,+bindnow
 PKGDIR=$(CURDIR)/debian/bubblewrap
 
 %:
-	dh $@
+	dh $@ --buildsystem=meson+ninja --without=autoreconf
 
 override_dh_auto_configure:
 	dh_auto_configure \
 		-- \
-		--with-zsh-completion-dir=/usr/share/zsh/vendor-completions \
+		-Dzsh_completion_dir=/usr/share/zsh/vendor-completions \
 		${NULL}
 .PHONY: override_dh_auto_configure
 

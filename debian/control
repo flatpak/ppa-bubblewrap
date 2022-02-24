@@ -6,15 +6,14 @@ Uploaders:
  Laszlo Boszormenyi (GCS) <gcs@debian.org>,
  Simon McVittie <smcv@debian.org>,
 Build-Depends:
- automake (>= 1.14.1),
  bash-completion,
  debhelper-compat (= 13),
  docbook-xml,
  docbook-xsl,
  libcap-dev,
  libselinux1-dev (>= 2.1.9),
+ meson,
  pkg-config,
- python3 <!nocheck>,
  xsltproc,
 Standards-Version: 4.6.0
 Homepage: https://github.com/containers/bubblewrap
