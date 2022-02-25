@@ -1,3 +1,10 @@
+bubblewrap (0.6.1-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+  * Build using Meson
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 25 Feb 2022 17:45:45 +0000
+
 bubblewrap (0.6.0-1) unstable; urgency=medium
 
   * New upstream release
