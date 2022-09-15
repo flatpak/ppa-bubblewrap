@@ -10,10 +10,15 @@ Build-Depends:
  debhelper-compat (= 13),
  docbook-xml,
  docbook-xsl,
+ iproute2 <!nocheck>,
  libcap-dev,
+ libcap2-bin <!nocheck>,
+ libipc-run-perl <!nocheck>,
  libselinux1-dev (>= 2.1.9),
  meson,
+ perl:any <!nocheck>,
  pkg-config,
+ python3:any <!nocheck>,
  xsltproc,
 Standards-Version: 4.6.1
 Homepage: https://github.com/containers/bubblewrap
