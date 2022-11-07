@@ -1,4 +1,4 @@
-bubblewrap (0.7.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.7.0-1) unstable; urgency=medium
 
   * New upstream release
   * Standards-Version: 4.6.1 (no changes required)
@@ -8,7 +8,7 @@ bubblewrap (0.7.0-1) UNRELEASED; urgency=medium
     run them in privileged Docker containers on Salsa-CI, which will need
     these extra packages.
 
- -- Simon McVittie <smcv@debian.org>  Mon, 07 Nov 2022 17:45:29 +0000
+ -- Simon McVittie <smcv@debian.org>  Mon, 07 Nov 2022 17:57:24 +0000
 
 bubblewrap (0.6.2-1) unstable; urgency=medium
 
