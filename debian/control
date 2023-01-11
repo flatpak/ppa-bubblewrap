@@ -14,7 +14,7 @@ Build-Depends:
  libcap-dev,
  libcap2-bin <!nocheck>,
  libipc-run-perl <!nocheck>,
- libselinux1-dev (>= 2.1.9),
+ libselinux1-dev,
  meson,
  perl:any <!nocheck>,
  pkg-config,
@@ -34,8 +34,6 @@ Depends:
  ${shlibs:Depends},
 Recommends:
  procps,
-Breaks:
- flatpak (<< 0.8.0-2~),
 Description: utility for unprivileged chroot and namespace manipulation
  bubblewrap uses Linux namespaces to launch unprivileged containers.
  These containers can be used to sandbox semi-trusted applications such
