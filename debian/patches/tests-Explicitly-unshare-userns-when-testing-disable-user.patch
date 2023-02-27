@@ -1,0 +1,32 @@
+From: Simon McVittie <smcv@collabora.com>
+Date: Thu, 23 Feb 2023 10:00:47 +0000
+Subject: tests: Explicitly unshare userns when testing --disable-userns
+
+If we're running the tests as uid 0 with capabilities, then bwrap will
+not create a new user namespace by default, which means the limit won't
+be exceeded and the test will fail. Make sure we always try to create
+the new user namespace.
+
+Signed-off-by: Simon McVittie <smcv@collabora.com>
+Forwarded: https://github.com/containers/bubblewrap/pull/554
+---
+ tests/test-run.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/tests/test-run.sh b/tests/test-run.sh
+index 979480e..171e5d4 100755
+--- a/tests/test-run.sh
++++ b/tests/test-run.sh
+@@ -129,9 +129,9 @@ else
+     ! $BWRAP --assert-userns-disabled --dev-bind / / -- true
+     $BWRAP --unshare-user --disable-userns --dev-bind / / -- true
+     ! $BWRAP --unshare-user --disable-userns --dev-bind / / -- $BWRAP --dev-bind / / -- true
+-    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "echo 2 > /proc/sys/user/max_user_namespaces || true; ! $BWRAP --dev-bind / / -- true"
+-    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "echo 100 > /proc/sys/user/max_user_namespaces || true; ! $BWRAP --dev-bind / / -- true"
+-    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "! $BWRAP --dev-bind / / --assert-userns-disabled -- true"
++    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "echo 2 > /proc/sys/user/max_user_namespaces || true; ! $BWRAP --unshare-user --dev-bind / / -- true"
++    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "echo 100 > /proc/sys/user/max_user_namespaces || true; ! $BWRAP --unshare-user --dev-bind / / -- true"
++    $BWRAP --unshare-user --disable-userns --dev-bind / / -- sh -c "! $BWRAP --unshare-user --dev-bind / / --assert-userns-disabled -- true"
+     echo "ok - can disable nested userns"
+ fi
+ 
