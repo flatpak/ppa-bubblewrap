@@ -1,8 +1,13 @@
-bubblewrap (0.8.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.8.0-1) experimental; urgency=medium
 
   * New upstream release
+  * d/p/test-run-Filter-out-no-new-privs-in-capsh-output.patch:
+    Drop patch that was applied upstream
+  * d/p/tests-Explicitly-unshare-userns-when-testing-disable-user.patch,
+    d/p/tests-Try-harder-to-evade-disable-userns.patch:
+    Add proposed patches to fix test failure when run as root
 
- -- Simon McVittie <smcv@debian.org>  Mon, 27 Feb 2023 12:26:10 +0000
+ -- Simon McVittie <smcv@debian.org>  Mon, 27 Feb 2023 12:30:28 +0000
 
 bubblewrap (0.7.0-2) unstable; urgency=medium
 
