@@ -1,3 +1,13 @@
+bubblewrap (0.8.0-2) unstable; urgency=medium
+
+  * Upload to unstable.
+    The changes since 0.7.0 are small, and if a Flatpak vulnerability
+    similar to CVE-2021-41133 is reported during the Debian 12 release
+    lifetime, having the new --disable-userns option will give us more
+    options for how to prevent it.
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 28 Feb 2023 09:38:53 +0000
+
 bubblewrap (0.8.0-1) experimental; urgency=medium
 
   * New upstream release
