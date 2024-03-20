@@ -1,8 +1,12 @@
 bubblewrap (0.9.0~git20240215-1) UNRELEASED; urgency=medium
 
   * New upstream prerelease
+  * d/copyright: Update
+  * d/p/tests-Explicitly-unshare-userns-when-testing-disable-user.patch,
+    d/p/tests-Try-harder-to-evade-disable-userns.patch:
+    Drop patches that were included upstream
 
- -- Simon McVittie <smcv@debian.org>  Wed, 20 Mar 2024 17:20:12 +0000
+ -- Simon McVittie <smcv@debian.org>  Wed, 20 Mar 2024 17:28:39 +0000
 
 bubblewrap (0.8.0-2) unstable; urgency=medium
 
