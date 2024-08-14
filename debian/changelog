@@ -1,3 +1,12 @@
+bubblewrap (0.10.0-1) unstable; urgency=high
+
+  * New upstream release
+    - This version adds the --[ro-]bind-fd option, which is necessary to
+      resolve CVE-2024-42472 in Flatpak without introducing a potentially
+      exploitable race condition.
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 14 Aug 2024 09:43:11 +0100
+
 bubblewrap (0.9.0-1~flatpak1~22.04.1) jammy; urgency=medium
 
   * Rebuild for Ubuntu 22.04 'jammy'
