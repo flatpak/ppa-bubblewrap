@@ -1,6 +1,6 @@
-bubblewrap (0.9.901-1) UNRELEASED; urgency=medium
+bubblewrap (0.10.0-1) UNRELEASED; urgency=high
 
-  * New upstream release candidate
+  * New upstream release
     - This version adds the --[ro-]bind-fd option, which is necessary to
       resolve CVE-2024-42472 in Flatpak without introducing a potentially
       exploitable race condition.
