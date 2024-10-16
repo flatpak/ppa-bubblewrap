@@ -1,3 +1,10 @@
+bubblewrap (0.10.0+22+g50cdea6-1) UNRELEASED; urgency=medium
+
+  * New upstream snapshot
+  * d/salsa-ci.yml: Don't run Salsa-CI for branches targeting Ubuntu
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 16 Oct 2024 15:47:28 +0100
+
 bubblewrap (0.10.0-1) unstable; urgency=high
 
   * New upstream release
