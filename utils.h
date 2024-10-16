@@ -24,26 +24,33 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdarg.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <syslog.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
 #if 0
-#define __debug__(x) printf x
+#define debug(...) bwrap_log (LOG_DEBUG, __VA_ARGS__)
 #else
-#define __debug__(x)
+#define debug(...)
 #endif
 
 #define UNUSED __attribute__((__unused__))
 
 #define N_ELEMENTS(arr) (sizeof (arr) / sizeof ((arr)[0]))
 
-#define TRUE 1
-#define FALSE 0
-typedef int bool;
+#ifndef TEMP_FAILURE_RETRY
+#define TEMP_FAILURE_RETRY(expression) \
+  (__extension__                                                              \
+    ({ long int __result;                                                     \
+       do __result = (long int) (expression);                                 \
+       while (__result == -1L && errno == EINTR);                             \
+       __result; }))
+#endif
 
 #define PIPE_READ_END 0
 #define PIPE_WRITE_END 1
@@ -52,8 +59,13 @@ typedef int bool;
 #define PR_SET_CHILD_SUBREAPER 36
 #endif
 
-void  warn (const char *format,
-            ...) __attribute__((format (printf, 1, 2)));
+extern bool bwrap_level_prefix;
+
+void  bwrap_log (int severity,
+                 const char *format,
+                 ...) __attribute__((format (printf, 2, 3)));
+#define warn(...) bwrap_log (LOG_WARNING, __VA_ARGS__)
+
 void  die_with_error (const char *format,
                       ...) __attribute__((__noreturn__)) __attribute__((format (printf, 1, 2)));
 void  die_with_mount_error (const char *format,

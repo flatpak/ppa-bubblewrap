@@ -109,7 +109,7 @@ assert_file_has_content json-status.json '"child-pid": [0-9]'
 assert_file_has_content_literal json-status.json '"exit-code": 42'
 ok "info and json-status fd"
 
-DATA=$($RUN --proc /proc --unshare-all --info-fd 42 --json-status-fd 43 -- bash -c 'stat -L --format "%n %i" /proc/self/ns/*' 42>info.json 43>json-status.json 2>err.txt)
+DATA=$($RUN --proc /proc --unshare-all --info-fd 42 --json-status-fd 43 -- bash -c 'stat -L -c "%n %i" /proc/self/ns/*' 42>info.json 43>json-status.json 2>err.txt)
 
 for NS in "ipc" "mnt" "net" "pid" "uts"; do
 
@@ -570,5 +570,13 @@ $RUN --proc /proc --dev /dev --bind / / --bind-fd 100 /tmp cat /tmp/file-data 10
 assert_file_has_content stdout foobar
 
 ok "bind-fd"
+
+$RUN --chdir / --chdir / true > stdout 2>&1
+assert_file_has_content stdout '^bwrap: Only the last --chdir option will take effect$'
+ok "warning logged for redundant --chdir"
+
+$RUN --level-prefix --chdir / --chdir / true > stdout 2>&1
+assert_file_has_content stdout '^<4>bwrap: Only the last --chdir option will take effect$'
+ok "--level-prefix"
 
 done_testing
