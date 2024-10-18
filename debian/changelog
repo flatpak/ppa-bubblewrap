@@ -1,6 +1,12 @@
-bubblewrap (0.10.0+22+g50cdea6-1) UNRELEASED; urgency=medium
+bubblewrap (0.10.0+30+g0545e72-1) UNRELEASED; urgency=medium
 
   * New upstream snapshot
+    - New options to create overlay mounts (--overlay, etc.)
+    - New option --level-prefix
+    - Handle EINTR
+    - Ensure socket control message data is aligned correctly
+    - Remove Autotools build system
+    - Silence Meson and compiler warnings
   * d/salsa-ci.yml: Don't run Salsa-CI for branches targeting Ubuntu
 
  -- Simon McVittie <smcv@debian.org>  Wed, 16 Oct 2024 15:47:28 +0100
