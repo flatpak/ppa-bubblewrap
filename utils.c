@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <sys/syscall.h>
 #include <sys/socket.h>
+#include <sys/param.h>
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif
@@ -758,9 +759,9 @@ send_pid_on_socket (int sockfd)
   struct msghdr msg = {};
   struct iovec iov = { buf, sizeof (buf) };
   const ssize_t control_len_snd = CMSG_SPACE(sizeof(struct ucred));
-  char control_buf_snd[control_len_snd];
+  _Alignas(struct cmsghdr) char control_buf_snd[control_len_snd];
   struct cmsghdr *cmsg;
-  struct ucred *cred;
+  struct ucred cred;
 
   msg.msg_iov = &iov;
   msg.msg_iovlen = 1;
@@ -771,11 +772,11 @@ send_pid_on_socket (int sockfd)
   cmsg->cmsg_level = SOL_SOCKET;
   cmsg->cmsg_type = SCM_CREDENTIALS;
   cmsg->cmsg_len = CMSG_LEN(sizeof(struct ucred));
-  cred = (struct ucred *)CMSG_DATA(cmsg);
 
-  cred->pid = getpid ();
-  cred->uid = geteuid ();
-  cred->gid = getegid ();
+  cred.pid = getpid ();
+  cred.uid = geteuid ();
+  cred.gid = getegid ();
+  memcpy (CMSG_DATA (cmsg), &cred, sizeof (cred));
 
   if (TEMP_FAILURE_RETRY (sendmsg (sockfd, &msg, 0)) < 0)
     die_with_error ("Can't send pid");
@@ -800,7 +801,7 @@ read_pid_from_socket (int sockfd)
   struct msghdr msg = {};
   struct iovec iov = { recv_buf, sizeof (recv_buf) };
   const ssize_t control_len_rcv = CMSG_SPACE(sizeof(struct ucred));
-  char control_buf_rcv[control_len_rcv];
+  _Alignas(struct cmsghdr) char control_buf_rcv[control_len_rcv];
   struct cmsghdr* cmsg;
 
   msg.msg_iov = &iov;
@@ -821,8 +822,10 @@ read_pid_from_socket (int sockfd)
           cmsg->cmsg_type == SCM_CREDENTIALS &&
           payload_len == sizeof(struct ucred))
         {
-          struct ucred *cred = (struct ucred *)CMSG_DATA(cmsg);
-          return cred->pid;
+          struct ucred cred;
+
+          memcpy (&cred, CMSG_DATA (cmsg), sizeof (cred));
+          return cred.pid;
         }
     }
   die ("No pid returned on socket");
@@ -948,5 +951,130 @@ mount_strerror (int errsv)
 
       default:
         return strerror (errsv);
+    }
+}
+
+/*
+ * Return a + b if it would not overflow.
+ * Die with an "out of memory" error if it would.
+ */
+static size_t
+xadd (size_t a, size_t b)
+{
+#if defined(__GNUC__) && __GNUC__ >= 5
+  size_t result;
+  if (__builtin_add_overflow (a, b, &result))
+    die_oom ();
+  return result;
+#else
+  if (a > SIZE_MAX - b)
+    die_oom ();
+
+  return a + b;
+#endif
+}
+
+/*
+ * Return a * b if it would not overflow.
+ * Die with an "out of memory" error if it would.
+ */
+static size_t
+xmul (size_t a, size_t b)
+{
+#if defined(__GNUC__) && __GNUC__ >= 5
+  size_t result;
+  if (__builtin_mul_overflow (a, b, &result))
+    die_oom ();
+  return result;
+#else
+  if (b != 0 && a > SIZE_MAX / b)
+    die_oom ();
+
+  return a * b;
+#endif
+}
+
+void
+strappend (StringBuilder *dest, const char *src)
+{
+  size_t len = strlen (src);
+  size_t new_offset = xadd (dest->offset, len);
+
+  if (new_offset >= dest->size)
+    {
+      dest->size = xmul (xadd (new_offset, 1), 2);
+      dest->str = xrealloc (dest->str, dest->size);
+    }
+
+  /* Preserves the invariant that dest->str is always null-terminated, even
+   * though the offset is positioned at the null byte for the next write.
+   */
+  strncpy (dest->str + dest->offset, src, len + 1);
+  dest->offset = new_offset;
+}
+
+__attribute__((format (printf, 2, 3)))
+void
+strappendf (StringBuilder *dest, const char *fmt, ...)
+{
+  va_list args;
+  int len;
+  size_t new_offset;
+
+  va_start (args, fmt);
+  len = vsnprintf (dest->str + dest->offset, dest->size - dest->offset, fmt, args);
+  va_end (args);
+  if (len < 0)
+    die_with_error ("vsnprintf");
+  new_offset = xadd (dest->offset, len);
+  if (new_offset >= dest->size)
+    {
+      dest->size = xmul (xadd (new_offset, 1), 2);
+      dest->str = xrealloc (dest->str, dest->size);
+      va_start (args, fmt);
+      len = vsnprintf (dest->str + dest->offset, dest->size - dest->offset, fmt, args);
+      va_end (args);
+      if (len < 0)
+        die_with_error ("vsnprintf");
+    }
+
+  dest->offset = new_offset;
+}
+
+void
+strappend_escape_for_mount_options (StringBuilder *dest, const char *src)
+{
+  bool unescaped = true;
+
+  for (;;)
+    {
+      if (dest->offset == dest->size)
+        {
+          dest->size = MAX (64, xmul (dest->size, 2));
+          dest->str = xrealloc (dest->str, dest->size);
+        }
+      switch (*src)
+        {
+        case '\0':
+          dest->str[dest->offset] = '\0';
+          return;
+
+        case '\\':
+        case ',':
+        case ':':
+          if (unescaped)
+            {
+              dest->str[dest->offset++] = '\\';
+              unescaped = false;
+              continue;
+            }
+          /* else fall through */
+
+        default:
+          dest->str[dest->offset++] = *src;
+          unescaped = true;
+          break;
+        }
+      src++;
     }
 }
