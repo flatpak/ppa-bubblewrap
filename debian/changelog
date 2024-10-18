@@ -1,4 +1,4 @@
-bubblewrap (0.10.0+30+g0545e72-1) UNRELEASED; urgency=medium
+bubblewrap (0.10.0+30+g0545e72-1) experimental; urgency=low
 
   * New upstream snapshot
     - New options to create overlay mounts (--overlay, etc.)
@@ -8,8 +8,9 @@ bubblewrap (0.10.0+30+g0545e72-1) UNRELEASED; urgency=medium
     - Remove Autotools build system
     - Silence Meson and compiler warnings
   * d/salsa-ci.yml: Don't run Salsa-CI for branches targeting Ubuntu
+  * Standards-Version: 4.7.0 (no changes required)
 
- -- Simon McVittie <smcv@debian.org>  Wed, 16 Oct 2024 15:47:28 +0100
+ -- Simon McVittie <smcv@debian.org>  Fri, 18 Oct 2024 19:52:17 +0100
 
 bubblewrap (0.10.0-1) unstable; urgency=high
 
