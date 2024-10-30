@@ -1,8 +1,8 @@
-bubblewrap (0.11.0-1) UNRELEASED; urgency=medium
+bubblewrap (0.11.0-1) unstable; urgency=medium
 
   * New upstream release
 
- -- Simon McVittie <smcv@debian.org>  Wed, 30 Oct 2024 16:12:27 +0000
+ -- Simon McVittie <smcv@debian.org>  Wed, 30 Oct 2024 16:15:12 +0000
 
 bubblewrap (0.10.0+30+g0545e72-1) experimental; urgency=low
 
