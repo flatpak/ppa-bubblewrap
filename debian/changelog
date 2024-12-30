@@ -1,3 +1,17 @@
+bubblewrap (0.11.0-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * d/tests: Drop obsolete upstream-usrmerge autopkgtest.
+    This test was added to additionally run the upstream test suite on
+    a /usr-merged system. Now that all systems are merged-/usr, this
+    test no longer provides any benefit, and removing it will unblock
+    removal of the usrmerge package. (Closes: #1091676)
+
+  [ Simon McVittie ]
+  * Also remove d/tests/upstream-usrmerge symlink
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 30 Dec 2024 11:17:50 +0000
+
 bubblewrap (0.11.0-1) unstable; urgency=medium
 
   * New upstream release
