@@ -1,4 +1,5 @@
 Source: bubblewrap
+X-Style: black
 Section: admin
 Priority: optional
 Maintainer: Utopia Maintenance Team <pkg-utopia-maintainers@lists.alioth.debian.org>
@@ -6,8 +7,8 @@ Uploaders:
  Laszlo Boszormenyi (GCS) <gcs@debian.org>,
  Simon McVittie <smcv@debian.org>,
 Build-Depends:
- bash-completion,
  debhelper-compat (= 13),
+ bash-completion,
  docbook-xml,
  docbook-xsl,
  iproute2 <!nocheck>,
