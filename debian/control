@@ -14,7 +14,7 @@ Build-Depends:
  libcap-dev,
  libcap2-bin <!nocheck>,
  libipc-run-perl <!nocheck>,
- libselinux1-dev,
+ libselinux-dev,
  meson,
  perl:any <!nocheck>,
  pkgconf,
