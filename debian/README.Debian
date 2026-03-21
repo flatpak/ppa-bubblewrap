@@ -8,7 +8,7 @@ on system security is reduced. For example:
 - Flatpak uses bubblewrap to run partially-trusted, user-installable
   apps in a sandboxed environment.
 
-- libgnome-desktop uses bubblewrap to run thumbnailers in a sandboxed
+- The glycin library uses bubblewrap to run image loaders in a sandboxed
   environment, so that if there are security flaws in an image decoder
   used by a thumbnailer, the process of generating thumbnails for a
   maliciously crafted image cannot be used to attack the rest of the
