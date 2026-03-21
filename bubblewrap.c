@@ -2889,6 +2889,7 @@ main (int    argc,
   int intermediate_pids_sockets[2] = {-1, -1};
   const char *exec_path = NULL;
   int i;
+  struct sigaction sa = {};
 
   /* Handle --version early on before we try to acquire/drop
    * any capabilities so it works in a build environment;
@@ -2897,6 +2898,12 @@ main (int    argc,
    */
   if (argc == 2 && (strcmp (argv[1], "--version") == 0))
     print_version_and_exit ();
+
+  /* Reset SIGCHILD to SIG_DFL allowing signalfd working propertly
+   * if the parent process had set SIGCHLD to SIG_IGN. */
+  sigemptyset (&sa.sa_mask);
+  sa.sa_handler = SIG_DFL;
+  sigaction (SIGCHLD, &sa, NULL);
 
   real_uid = getuid ();
   real_gid = getgid ();
@@ -3105,7 +3112,7 @@ main (int    argc,
     }
 
   /* Switch to the custom user ns before the clone, gets us privs in that ns (assuming its a child of the current and thus allowed) */
-  if (opt_userns_fd > 0 && setns (opt_userns_fd, CLONE_NEWUSER) != 0)
+  if (opt_userns_fd != -1 && setns (opt_userns_fd, CLONE_NEWUSER) != 0)
     {
       if (errno == EINVAL)
         die ("Joining the specified user namespace failed, it might not be a descendant of the current user namespace.");
@@ -3128,7 +3135,7 @@ main (int    argc,
           if (errno == EINVAL)
             die ("Creating new namespace failed, likely because the kernel does not support user namespaces.  bwrap must be installed setuid on such systems.");
           else if (errno == EPERM && !is_privileged)
-            die ("No permissions to creating new namespace, likely because the kernel does not allow non-privileged user namespaces. On e.g. debian this can be enabled with 'sysctl kernel.unprivileged_userns_clone=1'.");
+            die ("No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces. On e.g. debian this can be enabled with 'sysctl kernel.unprivileged_userns_clone=1'.");
         }
 
       if (errno == ENOSPC)
@@ -3171,7 +3178,7 @@ main (int    argc,
 
       /* Initial launched process, wait for pid 1 or exec:ed command to exit */
 
-      if (opt_userns2_fd > 0 && setns (opt_userns2_fd, CLONE_NEWUSER) != 0)
+      if (opt_userns2_fd != -1 && setns (opt_userns2_fd, CLONE_NEWUSER) != 0)
         die_with_error ("Setting userns2 failed");
 
       /* We don't need any privileges in the launcher, drop them immediately. */
@@ -3212,7 +3219,7 @@ main (int    argc,
       return monitor_child (event_fd, pid, setup_finished_pipe[0]);
     }
 
-  if (opt_pidns_fd > 0)
+  if (opt_pidns_fd != -1)
     {
       if (setns (opt_pidns_fd, CLONE_NEWPID) != 0)
         die_with_error ("Setting pidns failed");
@@ -3439,7 +3446,7 @@ main (int    argc,
       die_with_error ("chdir /");
   }
 
-  if (opt_userns2_fd > 0 && setns (opt_userns2_fd, CLONE_NEWUSER) != 0)
+  if (opt_userns2_fd != -1 && setns (opt_userns2_fd, CLONE_NEWUSER) != 0)
     die_with_error ("Setting userns2 failed");
 
   if (opt_unshare_user && opt_userns_block_fd == -1 &&
