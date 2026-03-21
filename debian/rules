@@ -28,3 +28,6 @@ override_dh_auto_test:
 	env -u LD_PRELOAD dh_auto_test
 
 .PHONY: override_dh_auto_test
+
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS.md
