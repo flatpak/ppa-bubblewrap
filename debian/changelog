@@ -1,8 +1,30 @@
 bubblewrap (0.11.1-1) UNRELEASED; urgency=medium
 
   * New upstream release
+  * Stop overriding kernel.unprivileged_userns_clone sysctl.
+    The setting we use has been the default for several years.
+  * d/control: Remove Recommends on procps.
+    This was only needed as a way to force the required value of
+    kernel.unprivileged_userns_clone during the transition from Debian 10
+    to 11, and even then, only on non-systemd systems.
+  * d/p/debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch:
+    Refresh patch to apply after a grammatical fix upstream
+  * d/control: Replace transitional libselinux1-dev with libselinux-dev
+  * d/control: Bump Standards-Version to 4.7.3.
+    Remove Priority: optional, no longer required with current dpkg-dev.
+  * d/copyright: Stop quoting the FSF's former postal address
+  * d/rules: Stop overriding build system.
+    This was only necessary while bubblewrap supported both Meson and
+    Autotools builds, which it hasn't since 0.11.0.
+  * d/clean: Remove another Autotools remnant
+  * d/rules: Install NEWS.md as the upstream changelog
+  * Stop using debhelper's historical special case for a single binary
+    package. Explicitly list what we intend to install, instead.
+  * d/watch: Update to v5 format
+  * d/README.Debian: Mention glycin as a prominent use of bubblewrap
+  * d/README.Debian: Reduce focus on pre-Debian-10 kernels
 
- -- Simon McVittie <smcv@debian.org>  Sat, 21 Mar 2026 17:36:35 +0000
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Mar 2026 18:26:33 +0000
 
 bubblewrap (0.11.0-2) unstable; urgency=medium
 
