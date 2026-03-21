@@ -31,8 +31,6 @@ Multi-Arch: foreign
 Depends:
  ${misc:Depends},
  ${shlibs:Depends},
-Recommends:
- procps,
 Description: utility for unprivileged chroot and namespace manipulation
  bubblewrap uses Linux namespaces to launch unprivileged containers.
  These containers can be used to sandbox semi-trusted applications such
