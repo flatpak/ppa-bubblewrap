@@ -1,4 +1,4 @@
-bubblewrap (0.11.1-1) UNRELEASED; urgency=medium
+bubblewrap (0.11.1-1) unstable; urgency=medium
 
   * New upstream release
   * Stop overriding kernel.unprivileged_userns_clone sysctl.
@@ -24,7 +24,7 @@ bubblewrap (0.11.1-1) UNRELEASED; urgency=medium
   * d/README.Debian: Mention glycin as a prominent use of bubblewrap
   * d/README.Debian: Reduce focus on pre-Debian-10 kernels
 
- -- Simon McVittie <smcv@debian.org>  Sat, 21 Mar 2026 18:26:33 +0000
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Mar 2026 18:52:56 +0000
 
 bubblewrap (0.11.0-2) unstable; urgency=medium
 
