@@ -29,42 +29,11 @@ ways:
 
 - On kernels where unprivileged users can create new user namespaces,
   bubblewrap's bwrap executable can be an ordinary unprivileged program.
+  This is the case by default on all modern versions of Debian and Ubuntu.
 
 - On kernels where this is not possible, bubblewrap will not work unless
   the /usr/bin/bwrap executable is setuid root. Some bubblewrap and Flatpak
   features will not work in this configuration for security reasons.
-
-Newer Debian kernels (Linux 5.10 and newer; Debian 11 and newer)
-----------------------------------------------------------------
-
-Debian kernels since 5.10 allow unprivileged users to create new user
-namespaces. The bwrap executable can be made non-setuid on these kernels.
-
-By default, the bubblewrap package in Debian no longer installs a setuid
-root /usr/bin/bwrap executable.
-
-Ubuntu kernels (Ubuntu 18.04 and newer)
----------------------------------------
-
-Ubuntu kernels also allow unprivileged users to create new user
-namespaces. The bwrap executable can be made non-setuid on these kernels,
-and the Ubuntu bubblewrap package does not install a setuid executable.
-
-Older Debian kernels (Linux 5.9 and older; Debian 10 and older)
----------------------------------------------------------------
-
-Debian kernels older than 5.10 have support for user namespaces, but
-that feature is disabled by default to reduce the kernel's attack
-surface.
-
-The bubblewrap package contains configuration in
-/usr/lib/sysctl.d/50-bubblewrap.conf to enable user namespaces
-(see "Enabling kernel.unprivileged_userns_clone", below).
-
-If this is not desired, system administrators can copy that file
-to /etc/sysctl.d/50-bubblewrap.conf and modify it to disable unprivileged
-creation of user namespaces, then make bubblewrap setuid root so that it
-still works as intended (see "Making bubblewrap setuid root", below).
 
 Custom and third-party kernels
 ------------------------------
@@ -82,6 +51,8 @@ Configuring kernel.unprivileged_userns_clone
 This Debian-specific sysctl parameter controls whether unprivileged
 users are allowed to create new user namespaces.
 
+The default is 1 for all modern Debian and Ubuntu kernels.
+
 If it is set to 0, some attacks against the kernel are made more difficult,
 which can increase security. However, some user-space software will not
 be able to create a sandboxed environment or will have to rely on a
@@ -92,24 +63,19 @@ between different security risks.
 If this parameter is set to 0, bubblewrap and Flatpak will not work unless
 bwrap is made setuid root (see "Making bubblewrap setuid root" below).
 
-The default is 1 for Debian kernels that are version 5.10 or newer,
-1 for Ubuntu kernels, or 0 for older Debian kernels. The bubblewrap
-package contains configuration in /usr/lib/sysctl.d/50-bubblewrap.conf
-to set this parameter to 1 during system startup.
-
-If this is not desired, system administrators can copy
-/usr/lib/sysctl.d/50-bubblewrap.conf to /etc/sysctl.d/50-bubblewrap.conf
-and modify it to disable unprivileged creation of user namespaces, then
-make bubblewrap setuid root so that it still works as intended (see
-"Making bubblewrap setuid root", below).
-
 You can view the current setting with:
 
     cat /proc/sys/kernel/unprivileged_userns_clone
 
-and temporarily set it to 1 (until the next reboot) with:
+and temporarily set it to 0 or 1 (until the next reboot) with a command
+like:
 
     sudo sysctl -w kernel.unprivileged_userns_clone=1
+
+It can be set permanently by using a file /etc/sysctl.d/*.conf:
+this requires either systemd as pid 1, or the procps package.
+For details please see sysctl.d(5) on systemd systems, or sysctl.conf(5)
+on systems using a non-default init.
 
 Configuring the maximum number of namespaces per user
 -----------------------------------------------------
@@ -144,7 +110,7 @@ Configuring whether bubblewrap is setuid root
 To use bubblewrap with kernel.unprivileged_userns_clone set to 0
 or user.max_user_namespaces set to 0, it is necessary to make the bwrap
 executable setuid root. This gives it the necessary capabilities to set
-up containers even when run by an otherwise unprivileged user, and is the
+up containers even when run by an otherwise unprivileged user, and was the
 configuration normally used in Debian 10.
 
 This can be a security risk: if there are bugs in bubblewrap, it might be
