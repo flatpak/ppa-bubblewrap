@@ -1,6 +1,7 @@
 bubblewrap (0.10.0-1~flatpak1~20.04.1) UNRELEASED; urgency=medium
 
   * Rebuild for Ubuntu 20.04 'focal'
+    - Roll back to debhelper compat level 12
 
  -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 13:06:39 +0100
 
