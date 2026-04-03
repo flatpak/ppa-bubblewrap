@@ -17,7 +17,7 @@ Build-Depends:
  libselinux1-dev,
  meson,
  perl:any <!nocheck>,
- pkgconf,
+ pkg-config,
  python3:any <!nocheck>,
  xsltproc,
 Standards-Version: 4.7.0
