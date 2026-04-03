@@ -7,7 +7,7 @@ Uploaders:
  Simon McVittie <smcv@debian.org>,
 Build-Depends:
  bash-completion,
- debhelper-compat (= 13),
+ debhelper-compat (= 12),
  docbook-xml,
  docbook-xsl,
  iproute2 <!nocheck>,
