@@ -1,3 +1,37 @@
+bubblewrap (0.11.0-2) unstable; urgency=medium
+
+  [ Helmut Grohne ]
+  * d/tests: Drop obsolete upstream-usrmerge autopkgtest.
+    This test was added to additionally run the upstream test suite on
+    a /usr-merged system. Now that all systems are merged-/usr, this
+    test no longer provides any benefit, and removing it will unblock
+    removal of the usrmerge package. (Closes: #1091676)
+
+  [ Simon McVittie ]
+  * Also remove d/tests/upstream-usrmerge symlink
+
+ -- Simon McVittie <smcv@debian.org>  Mon, 30 Dec 2024 11:17:50 +0000
+
+bubblewrap (0.11.0-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 30 Oct 2024 16:15:12 +0000
+
+bubblewrap (0.10.0+30+g0545e72-1) experimental; urgency=low
+
+  * New upstream snapshot
+    - New options to create overlay mounts (--overlay, etc.)
+    - New option --level-prefix
+    - Handle EINTR
+    - Ensure socket control message data is aligned correctly
+    - Remove Autotools build system
+    - Silence Meson and compiler warnings
+  * d/salsa-ci.yml: Don't run Salsa-CI for branches targeting Ubuntu
+  * Standards-Version: 4.7.0 (no changes required)
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 18 Oct 2024 19:52:17 +0100
+
 bubblewrap (0.10.0-1~flatpak1~24.04.1) noble; urgency=medium
 
   * Rebuild for Ubuntu 24.04 'noble'
