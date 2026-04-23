@@ -1,12 +1,19 @@
-bubblewrap (0.11.2-1) UNRELEASED; urgency=medium
+bubblewrap (0.11.2-1) unstable; urgency=medium
 
   * New upstream release
     - Fixes a root privilege escalation vulnerability if bwrap has been
       made setuid root locally (CVE-2026-41163, Closes: #1134704).
       Most Debian systems have a non-setuid bubblewrap and therefore
       are unaffected by this.
+  * d/rules: Temporarily allow bubblewrap to be setuid root.
+    This configuration is a security risk and rarely necessary, so the
+    option is deprecated, and a future upstream version will
+    unconditionally refuse to run if it detects that it has been run
+    setuid root.
+  * d/README.Debian: Update to reflect deprecation of setuid-root bwrap
+  * d/NEWS: Mention deprecation of setuid-root mode
 
- -- Simon McVittie <smcv@debian.org>  Thu, 23 Apr 2026 12:04:28 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 23 Apr 2026 12:25:34 +0100
 
 bubblewrap (0.11.1-1) unstable; urgency=medium
 
