@@ -1,0 +1,15 @@
+bubblewrap (0.11.2-1) UNRELEASED; urgency=medium
+
+  Historically, bubblewrap was sometimes installed setuid root. This is
+  a security risk and has been deprecated upstream. It is unnecessary
+  on Debian kernels since Debian 11.
+
+  If bubblewrap has been made setuid root via dpkg-statoverride, please remove
+  that setting, and instead leave it unprivileged.
+  See file:///usr/share/doc/bubblewrap/README.Debian.gz for more details.
+
+  As a safety mechanism against possible root privilege escalation
+  vulnerabiltiies, future versions of bubblewrap will refuse to run if
+  it is detected to be setuid root.
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 23 Apr 2026 12:16:41 +0100
