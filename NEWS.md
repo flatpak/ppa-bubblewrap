@@ -1,3 +1,22 @@
+bubblewrap 0.11.2
+=================
+
+Released: 2026-04-23
+
+Bug fixes:
+
+  * In setuid mode, don't run the low-privileged parts parts of the setup
+    as dumpable, as that allows it to be ptraced which can lead to problems.
+    This is CVE-2026-41163, and was reported by François Diakhate.
+
+Enhancements:
+
+  * New build option `-Dsupport_setuid`, which if set to false (which
+    is the default) disables the support for setuid. Binaries built
+    with this will refuse to run if made setuid. We recommend building
+    normal bubblewrap binaries like this, which allows you to safely
+    ignore any security issues that only affect setuid mode.
+
 bubblewrap 0.11.1
 =================
 
