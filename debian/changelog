@@ -1,3 +1,13 @@
+bubblewrap (0.11.2-1) UNRELEASED; urgency=medium
+
+  * New upstream release
+    - Fixes a root privilege escalation vulnerability if bwrap has been
+      made setuid root locally (CVE-2026-41163, Closes: #1134704).
+      Most Debian systems have a non-setuid bubblewrap and therefore
+      are unaffected by this.
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 23 Apr 2026 12:04:28 +0100
+
 bubblewrap (0.11.1-1) unstable; urgency=medium
 
   * New upstream release
