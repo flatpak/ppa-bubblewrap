@@ -24,18 +24,14 @@ environment, for example with different shared libraries available:
 - Steam uses bubblewrap to run some games with a predictable library
   stack that does not match the rest of the system.
 
-The necessary capabilities to do this can be obtained in one of two
-ways:
+To achieve this, the kernel must support user namespaces, and allow
+ordinary unprivileged processes to create a new user namespace.
+This is the case by default on all modern versions of Debian and Ubuntu.
 
-- On kernels where unprivileged users can create new user namespaces,
-  bubblewrap's bwrap executable can be an ordinary unprivileged program.
-  This is the case by default on all modern versions of Debian and Ubuntu.
-
-- On kernels where this is not possible, normally bubblewrap will not work.
-  Historically it was possible to get partial functionality by making the
-  /usr/bin/bwrap executable setuid root, but this is deprecated because
-  it is a security risk. A future bubblewrap release will remove the
-  ability to run it setuid-root.
+Historically, the bubblewrap executable was sometimes setuid root,
+which allowed it to create user namespaces even if unprivileged processes
+are not able to do so. This was deprecated because it is a security risk,
+and is no longer possible.
 
 Custom and third-party kernels
 ------------------------------
@@ -56,14 +52,12 @@ users are allowed to create new user namespaces.
 The default is 1 for all modern Debian and Ubuntu kernels.
 
 If it is set to 0, some attacks against the kernel are made more difficult,
-which can increase security. However, some user-space software will not
-be able to create a sandboxed environment, which reduces security, or
-in many cases will not work at all. The value of this sysctl parameter is a
-trade-off between different security risks.
+which can increase security. However, user-space software like bubblewrap
+and web browsers will not be able to create a sandboxed environment.
+The value of this sysctl parameter is a trade-off between different
+security risks.
 
-If this parameter is set to 0, bubblewrap and Flatpak will not work unless
-bwrap is made setuid root, which is deprecated and discouraged
-(see "Configuring whether bubblewrap is setuid root" below).
+If this parameter is set to 0, bubblewrap and Flatpak will not work.
 
 You can view the current setting with:
 
@@ -87,9 +81,7 @@ depends on the amount of RAM available.
 
 Setting this limit to 0 is the recommended way to disable user namespace
 creation if this is required as a security hardening measure. However,
-bubblewrap will not work with this limit set to 0, unless it is setuid root,
-which is deprecated and discouraged (see "Configuring whether bubblewrap is
-setuid root" below).
+bubblewrap will not work with this limit set to 0.
 
 The limit is given by the user.max_user_namespaces sysctl parameter.
 
@@ -112,21 +104,13 @@ Configuring whether bubblewrap is setuid root
 
 To use bubblewrap with kernel.unprivileged_userns_clone set to 0 or
 user.max_user_namespaces set to 0, historically some systems made the bwrap
-executable setuid root. This gives it the necessary capabilities to set up
-containers even when run by an otherwise unprivileged user, and was the
-configuration normally used in Debian 10.
+executable setuid root. This led to a risk of root privilege escalation
+security vulnerabilities such as CVE-2026-41163, CVE-2020-5291
+and CVE-2016-8659, and as a result this configuration has been disabled.
 
-This is a security risk: if there are bugs in bubblewrap, it has sometimes
-been possible for an unprivileged user to get root privileges by running
-a setuid version of the bwrap executable. CVE-2026-41163, CVE-2020-5291
-and CVE-2016-8659 are examples of bugs that had this effect in the past.
-A future version of bubblewrap will remove the ability to run it as
-setuid root, to prevent similar vulnerabilities.
+If it is setuid root, bubblewrap will now fail with this error message:
 
-Some Flatpak and bubblewrap features are not available when bwrap is
-setuid root, and the absence of those features is known to break some
-Flatpak apps. For example, the Flatpak app for the Chromium web browser
-will not work with a setuid bwrap executable.
+    bwrap: setuid use of bubblewrap is not supported
 
 To check whether the bwrap executable will be made setuid root after
 the next upgrade, use this command:
@@ -137,11 +121,3 @@ and to remove any permissions overrides that it might have:
 
     sudo dpkg-statoverride --quiet --remove /usr/bin/bwrap
     sudo chmod 0755 /usr/bin/bwrap
-
-To force the bwrap executable to be setuid root, in the past these commands
-were suggested:
-
-    sudo dpkg-statoverride --quiet --remove /usr/bin/bwrap
-    sudo dpkg-statoverride --update --add root root 4755 /usr/bin/bwrap
-
-but note that this will make future versions of bubblewrap non-functional.
