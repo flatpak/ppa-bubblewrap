@@ -14,7 +14,7 @@ PKGDIR=$(CURDIR)/debian/bubblewrap
 override_dh_auto_configure:
 	dh_auto_configure \
 		-- \
-		-Dsupport_setuid=true \
+		-Dsupport_setuid=false \
 		-Dzsh_completion_dir=/usr/share/zsh/vendor-completions \
 		${NULL}
 .PHONY: override_dh_auto_configure
