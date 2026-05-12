@@ -1,11 +1,12 @@
-bubblewrap (0.11.2-2) UNRELEASED; urgency=medium
+bubblewrap (0.11.2-2) unstable; urgency=medium
 
   * d/rules: Stop allowing bubblewrap to run when setuid, matching
     the upstream default. This ensures that vulnerabilities similar to
     CVE-2026-41163 can't happen in future.
   * d/control, d/NEWS, d/README.Debian: Update documentation accordingly
+  * Standards-Version: 4.7.4 (no changes required)
 
- -- Simon McVittie <smcv@debian.org>  Wed, 06 May 2026 10:12:31 +0100
+ -- Simon McVittie <smcv@debian.org>  Tue, 12 May 2026 18:57:32 +0100
 
 bubblewrap (0.11.2-1) unstable; urgency=medium
 
