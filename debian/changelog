@@ -1,4 +1,4 @@
-bubblewrap (0.12.0-1) UNRELEASED; urgency=high
+bubblewrap (0.12.0-1) unstable; urgency=high
 
   * New upstream release
     - Prevent sandbox escape via symlink traversal.
@@ -19,7 +19,7 @@ bubblewrap (0.12.0-1) UNRELEASED; urgency=high
     As a result, this version will not work on kernels older than the
     one found in Debian 11.
 
- -- Simon McVittie <smcv@debian.org>  Wed, 26 Aug 2026 11:17:34 +0100
+ -- Simon McVittie <smcv@debian.org>  Wed, 26 Aug 2026 11:32:16 +0100
 
 bubblewrap (0.11.2-2) unstable; urgency=medium
 
