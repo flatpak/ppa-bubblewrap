@@ -9,14 +9,18 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+pie,+bindnow
 PKGDIR=$(CURDIR)/debian/bubblewrap
 
 %:
-	dh $@ --buildsystem=meson+ninja --without=autoreconf
+	dh $@
 
 override_dh_auto_configure:
 	dh_auto_configure \
 		-- \
+		-Dassume_kernel=5.10.0 \
 		-Dzsh_completion_dir=/usr/share/zsh/vendor-completions \
 		${NULL}
 .PHONY: override_dh_auto_configure
+
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/tmp
 
 override_dh_auto_test:
 	# Remove LD_PRELOAD so we don't run with faketime. It uses
@@ -25,3 +29,6 @@ override_dh_auto_test:
 	env -u LD_PRELOAD dh_auto_test
 
 .PHONY: override_dh_auto_test
+
+override_dh_installchangelogs:
+	dh_installchangelogs NEWS.md

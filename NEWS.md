@@ -1,3 +1,83 @@
+bubblewrap 0.12.0
+=================
+
+Released: 2026-08-26
+
+Enhancements:
+
+ * The flag --not-a-security-boundary was added. If this is enabled
+   then failure of some sandbox setup steps (like remounting a
+   submount) are not fatal.
+
+ * The license has been updated from LGPL 2.0 (or later) to LGPL 2.1
+   (or later).
+
+ * This version removes the support for building a setuid
+   bubblewrap. Changes in this version made it difficult to support
+   and basically all modern linux distributions now support
+   unprivileged user namespaces to some extent.
+
+ * The assume_kernel build option was added, if specified no backwards
+   compatiblity for kernels older than this is built in (and will result
+   in hard failures at runtime). Currently specifying 5.6.0 or
+   later will disable the fallback implementation of
+   openat2(RESOLVE_IN_ROOT).
+
+Bug fixes:
+
+  * Bubblewrap now correctly resolves absolute symlinks during the
+    sandbox setup by using openat2 with RESOLVE_IN_ROOT (or a fallback
+    implementation). This fixes a security issue (GHSA-pxhw-h44j-8pfx)
+    where file or directories created during sandbox setup could
+    follow parent symlinks out of the sandbox.
+
+bubblewrap 0.11.2
+=================
+
+Released: 2026-04-23
+
+Bug fixes:
+
+  * In setuid mode, don't run the low-privileged parts parts of the setup
+    as dumpable, as that allows it to be ptraced which can lead to problems.
+    This is CVE-2026-41163, and was reported by François Diakhate.
+
+Enhancements:
+
+  * New build option `-Dsupport_setuid`, which if set to false (which
+    is the default) disables the support for setuid. Binaries built
+    with this will refuse to run if made setuid. We recommend building
+    normal bubblewrap binaries like this, which allows you to safely
+    ignore any security issues that only affect setuid mode.
+
+bubblewrap 0.11.1
+=================
+
+Released: 2026-03-21
+
+Bug fixes:
+
+  * Reset disposition of `SIGCHLD`, restoring normal subprocess management
+    if bwrap was run from a process that was ignoring that signal,
+    such as Erlang or volumeicon (#705, Joel Pelaez Jorge)
+
+  * Don't ignore `--userns 0`, `--userns2 0` or `--pidns 0` if used
+    (#731, Daniel Cazares).
+    Note that using a fd number ≥ 3 for these purposes is still
+    preferred, to avoid confusion with the stdin, stdout, stderr
+    that will be inherited by the command inside the container.
+
+  * Fix grammar in an error message (#694, J. Neuschäfer)
+
+  * Fix a broken link in the documentation (#729, Aaron Brooks)
+
+Internal changes:
+
+  * Enable user namespaces in Github Actions configuration, fixing a CI
+    regression with newer Ubuntu (#728, Joel Pelaez Jorge)
+
+  * Clarify comments (#737, Simon McVittie)
+
 bubblewrap 0.11.0
 =================
 
