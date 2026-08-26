@@ -1,3 +1,107 @@
+bubblewrap (0.12.0-1~flatpak1~22.04.1) UNRELEASED; urgency=medium
+
+  * Rebuild 0.12.0 for Ubuntu 22.04
+  * Remaining changes:
+    - Revert "Build-depend on pkgconf in preference to pkg-config"
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 16:48:24 +0100
+
+bubblewrap (0.12.0-1~flatpak1~24.04.1) UNRELEASED; urgency=medium
+
+  * Rebuild 0.12.0 for Ubuntu 24.04
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 16:48:24 +0100
+
+bubblewrap (0.12.0-1~flatpak1~26.04.1) UNRELEASED; urgency=medium
+
+  * Rebuild 0.12.0 for Ubuntu 26.04
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 16:48:24 +0100
+
+bubblewrap (0.12.0-1) unstable; urgency=high
+
+  * New upstream release
+    - Prevent sandbox escape via symlink traversal.
+      If an app framework such as Flatpak mounts subdirectories into a
+      directory controlled by the sandboxed app, a malicious or compromised
+      sandboxed app could create symlinks in that directory to arrange for
+      files/directories to be created on the host system.
+      (GHSA-pxhw-h44j-8pfx, no known CVE ID; Closes: #1145655)
+    - d/rules: Stop passing -Dsupport_setuid=false.
+      The option no longer exists, and the new version of bubblewrap always
+      behaves as though its value was false.
+    - d/copyright: Update license from LGPL-2+ to LGPL-2.1+, matching upstream
+    - d/p/debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch:
+      Adjust patch to apply to the new upstream release
+  * d/rules: Don't compile fallback code paths for kernel older than 5.10.
+    This ensures that we're using the safest available mechanisms,
+    using the openat2() syscall rather than emulating it in user-space.
+    As a result, this version will not work on kernels older than the
+    one found in Debian 11.
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 26 Aug 2026 11:32:16 +0100
+
+bubblewrap (0.11.2-2) unstable; urgency=medium
+
+  * d/rules: Stop allowing bubblewrap to run when setuid, matching
+    the upstream default. This ensures that vulnerabilities similar to
+    CVE-2026-41163 can't happen in future.
+  * d/control, d/NEWS, d/README.Debian: Update documentation accordingly
+  * Standards-Version: 4.7.4 (no changes required)
+
+ -- Simon McVittie <smcv@debian.org>  Tue, 12 May 2026 18:57:32 +0100
+
+bubblewrap (0.11.2-1) unstable; urgency=medium
+
+  * New upstream release
+    - Fixes a root privilege escalation vulnerability if bwrap has been
+      made setuid root locally (CVE-2026-41163, Closes: #1134704).
+      Most Debian systems have a non-setuid bubblewrap and therefore
+      are unaffected by this.
+  * d/rules: Temporarily allow bubblewrap to be setuid root.
+    This configuration is a security risk and rarely necessary, so the
+    option is deprecated, and a future upstream version will
+    unconditionally refuse to run if it detects that it has been run
+    setuid root.
+  * d/README.Debian: Update to reflect deprecation of setuid-root bwrap
+  * d/NEWS: Mention deprecation of setuid-root mode
+
+ -- Simon McVittie <smcv@debian.org>  Thu, 23 Apr 2026 12:25:34 +0100
+
+bubblewrap (0.11.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * Stop overriding kernel.unprivileged_userns_clone sysctl.
+    The setting we use has been the default for several years.
+  * d/control: Remove Recommends on procps.
+    This was only needed as a way to force the required value of
+    kernel.unprivileged_userns_clone during the transition from Debian 10
+    to 11, and even then, only on non-systemd systems.
+  * d/p/debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch:
+    Refresh patch to apply after a grammatical fix upstream
+  * d/control: Replace transitional libselinux1-dev with libselinux-dev
+  * d/control: Bump Standards-Version to 4.7.3.
+    Remove Priority: optional, no longer required with current dpkg-dev.
+  * d/copyright: Stop quoting the FSF's former postal address
+  * d/rules: Stop overriding build system.
+    This was only necessary while bubblewrap supported both Meson and
+    Autotools builds, which it hasn't since 0.11.0.
+  * d/clean: Remove another Autotools remnant
+  * d/rules: Install NEWS.md as the upstream changelog
+  * Stop using debhelper's historical special case for a single binary
+    package. Explicitly list what we intend to install, instead.
+  * d/watch: Update to v5 format
+  * d/README.Debian: Mention glycin as a prominent use of bubblewrap
+  * d/README.Debian: Reduce focus on pre-Debian-10 kernels
+
+ -- Simon McVittie <smcv@debian.org>  Sat, 21 Mar 2026 18:52:56 +0000
+
+bubblewrap (0.11.0-2~flatpak1~22.04.2) jammy; urgency=medium
+
+  * Revert "Build-depend on pkgconf in preference to pkg-config"
+
+ -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 17:09:19 +0100
+
 bubblewrap (0.11.0-2~flatpak1~20.04.1) focal; urgency=medium
 
   * Rebuild for Ubuntu 20.04 'focal'
