@@ -1,3 +1,15 @@
+bubblewrap (0.12.0-1) UNRELEASED; urgency=high
+
+  * New upstream release
+    - Prevent sandbox escape via symlink traversal.
+      If an app framework such as Flatpak mounts subdirectories into a
+      directory controlled by the sandboxed app, a malicious or compromised
+      sandboxed app could create symlinks in that directory to arrange for
+      files/directories to be created on the host system.
+      (GHSA-pxhw-h44j-8pfx, no known CVE ID; Closes: #-1)
+
+ -- Simon McVittie <smcv@debian.org>  Wed, 26 Aug 2026 11:17:34 +0100
+
 bubblewrap (0.11.2-2) unstable; urgency=medium
 
   * d/rules: Stop allowing bubblewrap to run when setuid, matching
