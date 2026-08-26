@@ -6,7 +6,18 @@ bubblewrap (0.12.0-1) UNRELEASED; urgency=high
       directory controlled by the sandboxed app, a malicious or compromised
       sandboxed app could create symlinks in that directory to arrange for
       files/directories to be created on the host system.
-      (GHSA-pxhw-h44j-8pfx, no known CVE ID; Closes: #-1)
+      (GHSA-pxhw-h44j-8pfx, no known CVE ID; Closes: #1145655)
+    - d/rules: Stop passing -Dsupport_setuid=false.
+      The option no longer exists, and the new version of bubblewrap always
+      behaves as though its value was false.
+    - d/copyright: Update license from LGPL-2+ to LGPL-2.1+, matching upstream
+    - d/p/debian/Change-EPERM-error-message-to-show-Debian-specific-inform.patch:
+      Adjust patch to apply to the new upstream release
+  * d/rules: Don't compile fallback code paths for kernel older than 5.10.
+    This ensures that we're using the safest available mechanisms,
+    using the openat2() syscall rather than emulating it in user-space.
+    As a result, this version will not work on kernels older than the
+    one found in Debian 11.
 
  -- Simon McVittie <smcv@debian.org>  Wed, 26 Aug 2026 11:17:34 +0100
 
