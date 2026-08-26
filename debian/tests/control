@@ -1,10 +1,12 @@
 Tests:
- basic
- dev
- net
- upstream
- userns
-Restrictions: allow-stderr, isolation-machine
+ basic,
+ dev,
+ net,
+ upstream,
+ userns,
+Restrictions:
+ allow-stderr,
+ isolation-machine,
 Depends:
  bubblewrap,
  iproute2:native,
@@ -14,8 +16,11 @@ Depends:
  python3:native,
 
 Tests:
- upstream-as-root
-Restrictions: allow-stderr, isolation-machine, needs-root
+ upstream-as-root,
+Restrictions:
+ allow-stderr,
+ isolation-machine,
+ needs-root,
 Depends:
  bubblewrap,
  iproute2:native,

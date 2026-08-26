@@ -36,6 +36,7 @@
 #endif
 
 bool bwrap_level_prefix = false;
+int proc_fd = -1;
 
 __attribute__((format(printf, 2, 0))) static void
 bwrap_logv (int severity,
@@ -137,7 +138,7 @@ fork_intermediate_child (void)
   if (pid == -1)
     die_with_error ("Can't fork for --pidns");
 
-  /* Parent is an process not needed */
+  /* The parent process is not needed */
   if (pid != 0)
     exit (0);
 }
@@ -184,6 +185,20 @@ xstrdup (const char *str)
   assert (str != NULL);
 
   res = strdup (str);
+  if (res == NULL)
+    die_oom ();
+
+  return res;
+}
+
+char *
+xstrndup (const char *str, size_t n)
+{
+  char *res;
+
+  assert (str != NULL);
+
+  res = strndup (str, n);
   if (res == NULL)
     die_oom ();
 
@@ -369,8 +384,8 @@ xasprintf (const char *format,
 }
 
 int
-fdwalk (int proc_fd, int (*cb)(void *data,
-                               int   fd), void *data)
+fdwalk (int (*cb)(void *data,
+                  int   fd), void *data)
 {
   int open_max;
   int fd;
@@ -510,14 +525,18 @@ ensure_file (const char *path,
      the create file will fail in the read-only
      case with EROFS instead of EEXIST.
 
-     We're trying to set up a mount point for a non-directory, so any
-     non-directory, non-symlink is acceptable - it doesn't necessarily
-     have to be a regular file. */
+     We're trying to set up a mount point for a non-directory, for which
+     the kernel will accept any non-directory. If it's a symlink, follow
+     it and look at the target: again, any non-directory is good enough.
+     We'll only get S_ISLNK if the path is a dangling symlink (target
+     doesn't exist). */
   if (stat (path, &buf) ==  0 &&
       !S_ISDIR (buf.st_mode) &&
       !S_ISLNK (buf.st_mode))
     return 0;
 
+  /* If the file didn't exist, create it. If it was a dangling symlink
+   * (S_ISLNK above) then this will create the target of the symlink. */
   if (create_file (path, mode, NULL) != 0 &&  errno != EEXIST)
     return -1;
 
@@ -662,11 +681,11 @@ load_file_at (int         dfd,
 
 /* Sets errno on error (< 0) */
 int
-get_file_mode (const char *pathname)
+get_file_mode (int fd)
 {
   struct stat buf;
 
-  if (stat (pathname, &buf) !=  0)
+  if (fstat (fd, &buf) !=  0)
     return -1;
 
   return buf.st_mode & S_IFMT;
@@ -681,7 +700,8 @@ ensure_dir (const char *path,
   /* We check this ahead of time, otherwise
      the mkdir call can fail in the read-only
      case with EROFS instead of EEXIST on some
-     filesystems (such as NFS) */
+     filesystems (such as NFS).
+     We follow symlinks: it's OK if path is a symlink to a directory. */
   if (stat (path, &buf) == 0)
     {
       if (!S_ISDIR (buf.st_mode))
@@ -864,14 +884,6 @@ get_oldroot_path (const char *path)
   return strconcat ("/oldroot/", path);
 }
 
-char *
-get_newroot_path (const char *path)
-{
-  while (*path == '/')
-    path++;
-  return strconcat ("/newroot/", path);
-}
-
 int
 raw_clone (unsigned long flags,
            void         *child_stack)
@@ -952,6 +964,12 @@ mount_strerror (int errsv)
       default:
         return strerror (errsv);
     }
+}
+
+char *
+fd_to_proc_path (int fd)
+{
+  return xasprintf ("/proc/self/fd/%d", fd);
 }
 
 /*
