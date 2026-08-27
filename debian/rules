@@ -14,7 +14,6 @@ PKGDIR=$(CURDIR)/debian/bubblewrap
 override_dh_auto_configure:
 	dh_auto_configure \
 		-- \
-		-Dassume_kernel=5.10.0 \
 		-Dzsh_completion_dir=/usr/share/zsh/vendor-completions \
 		${NULL}
 .PHONY: override_dh_auto_configure
