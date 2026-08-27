@@ -1,11 +1,12 @@
-bubblewrap (0.12.0-1~flatpak1~20.04.1) UNRELEASED; urgency=medium
+bubblewrap (0.12.0-1~flatpak1~20.04.1) focal; urgency=medium
 
   * Rebuild 0.12.0 for Ubuntu 20.04
   * Remaining changes:
     - Roll back to debhelper compat level 12
     - Revert "Build-depend on pkgconf in preference to pkg-config"
+  * Build with fallback for openat2() not working on older kernels
 
- -- Simon McVittie <smcv@debian.org>  Fri, 03 Apr 2026 16:48:24 +0100
+ -- Simon McVittie <smcv@debian.org>  Thu, 27 Aug 2026 22:45:55 +0100
 
 bubblewrap (0.12.0-1~flatpak1~22.04.1) jammy; urgency=medium
 
